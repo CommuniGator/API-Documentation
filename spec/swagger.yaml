@@ -13,7 +13,7 @@ info:
       
       This documentation is still being worked on.
 
-  version: 0.1.0
+  version: 0.1.1
   title: Communigator API Documentation
   contact:
     email: support@communigator.co.uk
@@ -33,9 +33,9 @@ consumes:
   - application/json
   #- application/xml
 tags:
-  - name: GatorSignOn
+  - name: Gator SignOn
     description: Gator Single Signon endpoint
-  - name: GatorMail
+  - name: Gator Mail
     description: GatorMail API endpoint
 securityDefinitions:
   client_auth:
@@ -55,14 +55,14 @@ securityDefinitions:
 paths:
   /signon/partner/create:
     post:
-      summary: Create SignOn Account
+      summary: Create Account
       description: This endpoint creates a Single Sign On account and a GatorLeads account. This method is only available to Communigator Partners.
       security:
         - client_auth:
             - SsoPartnerApi
       operationId: signon_create
       tags:
-        - GatorSignOn
+        - Gator SignOn
       consumes:
         - application/json
       parameters:
@@ -104,64 +104,6 @@ paths:
               "activate": true,
               "sendEmail": false
             }'
-            
-        - lang: PHP
-          source: |
-            <?php
-            // Get cURL resource
-            $ch = curl_init();
-            
-            // Set url
-            curl_setopt($ch, CURLOPT_URL, 'https://api.communigator.co.uk/signon/partner/create');
-            
-            // Set method
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-            
-            // Set options
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            
-            // Set headers
-            curl_setopt($ch, CURLOPT_HTTPHEADER, [
-              "Authorization: Bearer ***** Hidden credentials *****",
-              "Content-Type: application/json; charset=utf-8",
-             ]
-            );
-            // Create body
-            $json_array = [
-                        "firstName" => "Joe",
-                        "lastName" => "Blogs",
-                        "email" => "job.blogs@example",
-                        "companyName" => "Example",
-                        "contactNumber" => "012344422333",
-                        "activate" => true,
-                        "sendEmail" => false,
-                        "products" => [
-                            "gatorLeads" => [
-                                "registerUpsell" => [
-                                    "trackingQueue" => true
-                                ],
-                                "domain" => "example.com"
-                            ]
-                        ]
-                    ]; 
-            $body = json_encode($json_array);
-            
-            // Set body
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
-            
-            // Send the request & save response to $resp
-            $resp = curl_exec($ch);
-            
-            if(!$resp) {
-              die('Error: "' . curl_error($ch) . '" - Code: ' . curl_errno($ch));
-            } else {
-              echo "Response HTTP Status Code : " . curl_getinfo($ch, CURLINFO_HTTP_CODE);
-              echo "\nResponse HTTP Body : " . $resp;
-            }
-            
-            // Close request to clear up some resources
-            curl_close($ch); 
         - lang: 'C#'
           source:  |
             using System;
@@ -212,7 +154,7 @@ paths:
             - offline_access
       operationId: gatormail_getCampaignList
       tags:
-        - GatorMail
+        - Gator Mail
       parameters:
         - name: api-version
           in: header
@@ -257,7 +199,7 @@ paths:
             - offline_access
       operationId: gatormail_addCampaign
       tags:
-        - GatorMail
+        - Gator Mail
       parameters:
         - name: api-version
           in: header
@@ -286,7 +228,7 @@ paths:
             $ref: '#/definitions/gatormail_errorModel'
 
     patch:
-      summary: updates a campaign
+      summary: Updates a campaign
       description: Updates a campaign
       security:
         - client_application:
@@ -295,7 +237,7 @@ paths:
             - offline_access
       operationId: gatormail_updateCampaign
       tags:
-        - GatorMail
+        - Gator Mail
       parameters:
         - name: api-version
           in: header
@@ -333,7 +275,7 @@ paths:
             - offline_access
       operationId: gatormail_addGroup
       tags:
-        - GatorMail
+        - Gator Mail
       parameters:
         - name: api-version
           in: header
@@ -371,7 +313,7 @@ paths:
             - offline_access
       operationId: gatormail_updateGroup
       tags:
-        - GatorMail
+        - Gator Mail
       parameters:
         - name: api-version
           in: header
@@ -410,7 +352,7 @@ paths:
             - offline_access
       operationId: gatormail_deleteGroup
       tags:
-        - GatorMail
+        - Gator Mail
       parameters:
         - name: api-version
           in: header
@@ -449,7 +391,7 @@ paths:
             - offline_access
       operationId: gatormail_contactGroups
       tags:
-        - GatorMail
+        - Gator Mail
       parameters:
         - name: api-version
           in: header
@@ -491,7 +433,7 @@ paths:
             - offline_access
       operationId: gatormail_addContactToGroup
       tags:
-        - GatorMail
+        - Gator Mail
       parameters:
         - name: api-version
           in: header
@@ -539,7 +481,7 @@ paths:
             - offline_access
       operationId: gatormail_deleteContactFromGroup
       tags:
-        - GatorMail
+        - Gator Mail
       parameters:
         - name: api-version
           in: header
@@ -578,8 +520,8 @@ paths:
 
   /mail/{landingZone}/contact/{email}:
     get:
-      summary: List all contacts with the supplied email address
-      description: Gets List of `Email` objects.
+      summary: List all contacts by email
+      description: Gets List of `Email` objects with the supplied email address
       security:
         - client_application:
             - openId
@@ -587,7 +529,7 @@ paths:
             - offline_access
       operationId: gatormail_getContactsEmail
       tags:
-        - GatorMail
+        - Gator Mail
       parameters:
         - name: api-version
           in: header
@@ -617,7 +559,7 @@ paths:
             
   /mail/{landingZone}/integration/requests:
     get:
-      summary: Returns all requests made by GatorMail users for actions it wishes the integration to perform
+      summary: Get Integration Requests
       description: Returns all requests made by GatorMail users for actions it wishes the integration to perform
       security:
         - client_application:
@@ -626,7 +568,7 @@ paths:
             - offline_access
       operationId: gatormail_getIntegrationRequests
       tags:
-        - GatorMail
+        - Gator Mail
       parameters:
         - name: api-version
           in: header
@@ -653,7 +595,7 @@ paths:
 
   /mail/{landingZone}/integration/requests/{request}:
     patch:
-      summary: Marks a request made by a GatorMail user as satisfied.
+      summary: Marks a request satisfied.
       description: Marks a request made by a GatorMail user as satisfied.
       security:
         - client_application:
@@ -662,7 +604,7 @@ paths:
             - offline_access
       operationId: gatormail_getIntegrationRequestSatisfied
       tags:
-        - GatorMail
+        - Gator Mail
       parameters:
         - name: api-version
           in: header
@@ -702,7 +644,7 @@ paths:
             - offline_access
       operationId: gatormail_getSchema
       tags:
-        - GatorMail
+        - Gator Mail
       parameters:
         - name: api-version
           in: header
@@ -737,7 +679,7 @@ paths:
             - offline_access
       operationId: gatormail_deleteSchema
       tags:
-        - GatorMail
+        - Gator Mail
       parameters:
         - name: api-version
           in: header
@@ -757,7 +699,6 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/gatormail_errorModel'
-            
 
   /mail/{landingZone}/schemamappings/entity:
     post:
@@ -770,7 +711,7 @@ paths:
             - offline_access
       operationId: gatormail_postSchemaEntity
       tags:
-        - GatorMail
+        - Gator Mail
       parameters:
         - name: api-version
           in: header
@@ -810,7 +751,7 @@ paths:
             - offline_access
       operationId: gatormail_postSchemaAttribute
       tags:
-        - GatorMail
+        - Gator Mail
       parameters:
         - name: api-version
           in: header
@@ -852,7 +793,7 @@ paths:
             - offline_access
       operationId: gatormail_getDatafeed
       tags:
-        - GatorMail
+        - Gator Mail
       parameters:
         - name: api-version
           in: header
@@ -886,7 +827,7 @@ paths:
             - offline_access
       operationId: gatormail_getDatafeedBatchIdentifier
       tags:
-        - GatorMail
+        - Gator Mail
       parameters:
         - name: api-version
           in: header
@@ -923,7 +864,7 @@ paths:
             - offline_access
       operationId: gatormail_getDatafeedOptions
       tags:
-        - GatorMail
+        - Gator Mail
       parameters:
         - name: api-version
           in: header
@@ -956,7 +897,7 @@ paths:
             - offline_access
       operationId: gatormail_postDatafeedOptions
       tags:
-        - GatorMail
+        - Gator Mail
       parameters:
         - name: api-version
           in: header
@@ -996,7 +937,7 @@ paths:
             - offline_access
       operationId: gatormail_getEventById
       tags:
-        - GatorMail
+        - Gator Mail
       parameters:
         - name: api-version
           in: header
@@ -1027,8 +968,8 @@ paths:
 
   /mail/{landingZone}/events/{page}/{take}:
     get:
-      summary: Gets event for the given id.
-      description: Gets event for the given id.
+      summary: Get all events
+      description: Gets all the events
       security:
         - client_application:
             - openId
@@ -1036,7 +977,7 @@ paths:
             - offline_access
       operationId: gatormail_getEventPaged
       tags:
-        - GatorMail
+        - Gator Mail
       parameters:
         - name: api-version
           in: header
@@ -1073,7 +1014,7 @@ paths:
 
   /mail/{landingZone}/events:
     post:
-      summary: Creates an event management event, associating it with an event entity in the CRM.
+      summary: Creates an event management event
       description: Creates an event management event, associating it with an event entity in the CRM.
       security:
         - client_application:
@@ -1082,7 +1023,7 @@ paths:
             - offline_access
       operationId: gatormail_postEvent
       tags:
-        - GatorMail
+        - Gator Mail
       parameters:
         - name: api-version
           in: header
@@ -1112,7 +1053,7 @@ paths:
 
   /mail/{landingZone}/log/error:
     post:
-      summary: Creates an record in the integration error table or updates if a matching error already exists.
+      summary: Creates error record
       description: Creates an record in the integration error table or updates if a matching error already exists.
       security:
         - client_application:
@@ -1121,7 +1062,7 @@ paths:
             - offline_access
       operationId: gatormail_postLogError
       tags:
-        - GatorMail
+        - Gator Mail
       parameters:
         - name: api-version
           in: header
