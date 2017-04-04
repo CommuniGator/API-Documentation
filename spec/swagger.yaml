@@ -33,7 +33,7 @@ consumes:
   - application/json
   #- application/xml
 tags:
-  - name: GaotrSignOn
+  - name: GatorSignOn
     description: Gator Single Signon endpoint
   - name: GatorMail
     description: GatorMail API endpoint
@@ -62,7 +62,7 @@ paths:
             - SsoPartnerApi
       operationId: signon_create
       tags:
-        - GaotrSignOn
+        - GatorSignOn
       consumes:
         - application/json
       parameters:
