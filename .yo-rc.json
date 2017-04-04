@@ -1,0 +1,10 @@
+{
+  "generator-openapi-repo": {
+    "importExistingSpec": false,
+    "name": "Communigator",
+    "repo": "CommuniGator/API-Documentation",
+    "splitSpec": false,
+    "samples": true,
+    "installSwaggerUI": true
+  }
+}
