@@ -1,6 +1,9 @@
 # Dir for API portal deploy
 web_deploy
 
+# Visual Studio Code settings
+.vscode
+
 # Logs
 logs
 *.log

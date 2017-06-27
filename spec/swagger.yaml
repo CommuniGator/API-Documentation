@@ -1260,7 +1260,7 @@ paths:
           schema:
             $ref: "#/definitions/gatorleads_leads"
 
-  /client/{clientId}/leads/{type}/{startDate}/{endDate}/{page}/{take}:
+  /leads/client/{clientId}/leads/{type}/{startDate}/{endDate}/{page}/{take}:
     get:
       summary: Get Leads of specified type for the date range
       description: Gets a pages list of leads for specified date range and type
@@ -1269,7 +1269,7 @@ paths:
             - openid
             - GatorLeadApi
             - offline_access
-      operationId: gatorlead_pagedead_daterange
+      operationId: gatorlead_pagedLead_daterange
       tags:
         - Gator Leads
       parameters:
@@ -1318,6 +1318,169 @@ paths:
           schema:
             $ref: "#/definitions/gatorleads_pagedLead"
 
+  /leads/client/{clientId}/leads/{type}/search/{startDate}/{endDate}/{page}/{take}:
+    post:
+      summary: Get Leads of specified type for the date range
+      description: Gets a pages list of leads for specified date range and type
+      security:
+        - client_application:
+            - openid
+            - GatorLeadApi
+            - offline_access
+      operationId: gatorlead_pagedLead_daterange_search
+      tags:
+        - Gator Leads
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: clientId
+          in: path
+          type: string
+          required: true
+          description: this id of the client. **This is a GUID**
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+        - name: type
+          in: path
+          type: string
+          required: true
+          description: type of lead
+        - name: startDate
+          in: path
+          type: string
+          required: true
+          pattern: '^(?:[2-9]\d\d\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\d|0?[1-9]))T(2[01234]|[01]\d):[0-5]\d:[0-5]\d'
+          description: start date
+        - name: endDate
+          in: path
+          type: string
+          required: true
+          description: end date
+          pattern: '^(?:[2-9]\d\d\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\d|0?[1-9]))T(2[01234]|[01]\d):[0-5]\d:[0-5]\d'
+        - name: page
+          in: path
+          description: the page to get
+          required: true
+          type: integer
+          format: int64
+        - name: take
+          in: path
+          description: the number of results to get
+          required: true
+          type: integer
+          format: int64
+        - name: search
+          in: body
+          schema:
+            $ref: "#/definitions/gatorleads_leadSearch"
+      responses:
+        "200":
+          description: Returns paged list of leads
+          schema:
+            $ref: "#/definitions/gatorleads_pagedLead"
+    
+  /leads/client/{clientId}/leads/search/{types}/{page}/{take}:
+    post:
+      summary: Get Leads of specified type for the date range
+      description: Gets a pages list of leads for specified date range and type
+      security:
+        - client_application:
+            - openid
+            - GatorLeadApi
+            - offline_access
+      operationId: gatorlead_pagedLead_types_daterange_search
+      tags:
+        - Gator Leads
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: clientId
+          in: path
+          type: string
+          required: true
+          description: this id of the client. **This is a GUID**
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+        - name: types
+          in: path
+          type: string
+          required: true
+          description: comma separated list of lead types to return 
+        - name: startDate
+          in: query
+          type: string
+          required: true
+          pattern: '^(?:[2-9]\d\d\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\d|0?[1-9]))T(2[01234]|[01]\d):[0-5]\d:[0-5]\d'
+          description: start date
+        - name: endDate
+          in: query
+          type: string
+          required: true
+          description: end date
+          pattern: '^(?:[2-9]\d\d\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\d|0?[1-9]))T(2[01234]|[01]\d):[0-5]\d:[0-5]\d'
+        - name: page
+          in: path
+          description: the page to get
+          required: true
+          type: integer
+          format: int64
+        - name: take
+          in: path
+          description: the number of results to get
+          required: true
+          type: integer
+          format: int64
+        - name: search
+          in: body
+          schema:
+            $ref: "#/definitions/gatorleads_leadSearch"
+      responses:
+        "200":
+          description: Returns paged list of leads
+          schema:
+            $ref: "#/definitions/gatorleads_pagedLead"
+
+  /leads/client/{clientId}/lead/{leadId}:
+    get:
+      summary: Get Leads of specified type for the date range
+      description: Gets a pages list of leads for specified date range and type
+      security:
+        - client_application:
+            - openid
+            - GatorLeadApi
+            - offline_access
+      operationId: gatorlead_lead
+      tags:
+        - Gator Leads
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: clientId
+          in: path
+          type: string
+          required: true
+          description: this id of the client. **This is a GUID**
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+        - name: leadId
+          in: path
+          type: string
+          required: true
+          description: the id of the lead to return. **This is a GUID**
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+        
+      responses:
+        "200":
+          description: Returns paged list of leads
+          schema:
+            $ref: "#/definitions/gatorleads_lead"
+      
 definitions:
 
   model_error:
@@ -2912,4 +3075,41 @@ definitions:
     type: array
     items:
       $ref: "#/definitions/gatorleads_leadtype"
+  
+  gatorleads_utm:
+    type: object
+    properties:
+      utmName:
+        type: string
+      utmMedium:
+        type: string
+      utmTerm:
+        type: string
+      utmContent:
+        type: string
+  
+  gatorleads_matchType:
+    type: string
+    enum: &MATCHTYPE
+      - Exact
+      - Anywhere
+      - Start
+      - End
+      
+  gatorleads_leadSearch:
+    type: object
+    properties:
+      searchType: 
+        type: string
+        description: |
+          type of search to carry out 
+          Page : search value in the url domain is ignored
+          Keyword : search for a keyword
+          PPC : search for PPC keyword
+      utm:
+        $ref: "#/definitions/gatorleads_utm"
+      matchType:
+        $ref: "#/definitions/gatorleads_matchType"
+      
+
       
