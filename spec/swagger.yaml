@@ -1094,14 +1094,14 @@ paths:
             
   /leads/clients:
     get:
-      summary: Get Available clients
-      description: Gets event for the given id.
+      summary: Gets your client accounts
+      description: Gets your client accounts
       security:
         - client_application:
             - openid
             - GatorLeadApi
             - offline_access
-      operationId: gatorlead_clients
+      operationId: gatorlead_userclients
       tags:
         - Gator Leads
       parameters:
@@ -1110,24 +1110,25 @@ paths:
           description: the api version being requested
           required: true
           type: integer
-          
+        
       responses:
         "200":
-          description: Returns available leads
+          description: Returns a list of clients
           schema:
-            $ref: "#/definitions/gatorleads_clients"
-      
-
-  /leads/client/{clientId}:
+            type: array
+            items:
+              $ref: "#/definitions/gatorleads_userclient"  
+              
+  /leads/clients/{clientId}:
     get:
-      summary: Get Client Details
-      description: Returns details about the selected client
+      summary: Gets the client using the supplied Client Id
+      description: Gets the client using the supplied Client Id
       security:
         - client_application:
             - openid
             - GatorLeadApi
             - offline_access
-      operationId: gatorlead_clients_clientId
+      operationId: gatorlead_userclient
       tags:
         - Gator Leads
       parameters:
@@ -1140,14 +1141,14 @@ paths:
           in: path
           type: string
           required: true
-          description: this id of the client. **This is a GUID**
-          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
-          
+          description: the id of the client. **This is a GUID**
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"          
+        
       responses:
         "200":
-          description: Returns selected client account
+          description: Returns the client
           schema:
-            $ref: "#/definitions/gatorleads_client"
+            $ref: "#/definitions/gatorleads_client"        
 
   /leads/client/{clientId}/leads/types:
     get:
@@ -1171,7 +1172,7 @@ paths:
           in: path
           type: string
           required: true
-          description: this id of the client. **This is a GUID**
+          description: the id of the client. **This is a GUID**
           pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
           
       responses:
@@ -1202,7 +1203,7 @@ paths:
           in: path
           type: string
           required: true
-          description: this id of the client. **This is a GUID**
+          description: the id of the client. **This is a GUID**
           pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
         - name: leadid
           in: path
@@ -1239,7 +1240,7 @@ paths:
           in: path
           type: string
           required: true
-          description: this id of the client. **This is a GUID**
+          description: the id of the client. **This is a GUID**
           pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
         - name: minutes
           in: path
@@ -1282,7 +1283,7 @@ paths:
           in: path
           type: string
           required: true
-          description: this id of the client. **This is a GUID**
+          description: the id of the client. **This is a GUID**
           pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
         - name: type
           in: path
@@ -1340,7 +1341,7 @@ paths:
           in: path
           type: string
           required: true
-          description: this id of the client. **This is a GUID**
+          description: the id of the client. **This is a GUID**
           pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
         - name: type
           in: path
@@ -1403,7 +1404,7 @@ paths:
           in: path
           type: string
           required: true
-          description: this id of the client. **This is a GUID**
+          description: the id of the client. **This is a GUID**
           pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
         - name: types
           in: path
@@ -1466,7 +1467,7 @@ paths:
           in: path
           type: string
           required: true
-          description: this id of the client. **This is a GUID**
+          description: the id of the client. **This is a GUID**
           pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
         - name: leadId
           in: path
@@ -1480,7 +1481,38 @@ paths:
           description: Returns paged list of leads
           schema:
             $ref: "#/definitions/gatorleads_lead"
-            
+      
+  /leads/client/{clientId}/purl/create:
+    post:
+      summary: Creates a PURL for the supplied client
+      description: Creates a PURL for the supplied client
+      security:
+        - client_application:
+            - openid
+            - GatorLeadApi
+            - offline_access
+      operationId: gatorlead_createpurl
+      tags:
+        - Gator Leads
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: clientId
+          in: path
+          type: string
+          required: true
+          description: the id of the client. **This is a GUID**
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"          
+        
+      responses:
+        "200":
+          description: Returns the purl
+          schema:
+            $ref: "#/definitions/gatorleads_purl"   
+      
   /leads/client/{clientId}/trackedlinks/{take}:
     get:
       summary: Get tracked links from the queue
@@ -1503,7 +1535,7 @@ paths:
           in: path
           type: string
           required: true
-          description: this id of the client. **This is a GUID**
+          description: the id of the client. **This is a GUID**
           pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
         - name: take
           in: path
@@ -1517,6 +1549,179 @@ paths:
           description: Returns list of tracked links
           schema:
             $ref: "#/definitions/gatorleads_queuedlinkList"
+            
+  /leads/client/{clientId}/analytics/contactsdailyconnections?startDate={startDate}:
+   get:
+      summary: Get a daily list that counts the unique number of contacts that connected to the given client
+      description: Get a daily list that counts the unique number of contacts that connected to the given client
+      security:
+        - client_application:
+            - openid
+            - GatorLeadApi
+            - offline_access
+      operationId: gatorlead_contactsDailyConnections
+      tags:
+        - Gator Leads
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: clientId
+          in: path
+          type: string
+          required: true
+          description: the id of the client. **This is a GUID**
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+        - name: startDate
+          in: path
+          type: string
+          required: true
+          pattern: '^(?:[2-9]\d\d\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\d|0?[1-9]))T(2[01234]|[01]\d):[0-5]\d:[0-5]\d'
+          description: start date        
+      
+      responses:
+        "200":
+          description: Returns a list of daily connections for distinct contacts
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/gatorleads_contactsdailyconnections"
+              
+  /leads/client/{clientId}/analytics/companydailyconnections?startDate={startDate}:
+   get:
+      summary: Get a daily list that counts the unique number of companies that connected to the given client
+      description: Get a daily list that counts the unique number of companies that connected to the given client
+      security:
+        - client_application:
+            - openid
+            - GatorLeadApi
+            - offline_access
+      operationId: gatorlead_companyDailyConnections
+      tags:
+        - Gator Leads
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: clientId
+          in: path
+          type: string
+          required: true
+          description: the id of the client. **This is a GUID**
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+        - name: startDate
+          in: path
+          type: string
+          required: true
+          pattern: '^(?:[2-9]\d\d\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\d|0?[1-9]))T(2[01234]|[01]\d):[0-5]\d:[0-5]\d'
+          description: start date        
+      
+      responses:
+        "200":
+          description: Returns a list of daily connections for distinct companies
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/gatorleads_companydailyconnections" 
+              
+  /leads/client/{clientId}/trackedlinks/markprocessed/{processId}:
+   get:
+      summary: Marks tracked links previously retrieved as processed
+      description: Marks tracked links previously retrieved as processed
+      security:
+        - client_application:
+            - openid
+            - GatorLeadApi
+            - offline_access
+      operationId: gatorlead_markTrackedLinksProcessed
+      tags:
+        - Gator Leads
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: clientId
+          in: path
+          type: string
+          required: true
+          description: the id of the client. **This is a GUID**
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+        - name: processId
+          in: path
+          type: string
+          required: true
+          description: the process id returned from a call to "client/{clientId}/trackedlinks/{take}"". **This is a GUID**
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+      
+      responses:
+        "200":
+          description: Returns a boolean value indicating the success status
+          schema:
+            type: boolean
+      
+  /leads/settings/leadtypes:
+   get:
+      summary: Gets the lead types
+      description: Gets the lead types
+      security:
+        - client_application:
+            - openid
+            - GatorLeadApi
+            - offline_access
+      operationId: gatorlead_leadTypes
+      tags:
+        - Gator Leads
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+      
+      responses:
+        "200":
+          description: Returns an array of lead types
+          schema:
+            type: array
+            items:
+              type: string
+              
+  /leads/settings/leadtypenames/{clientId}:
+   get:
+      summary: Gets the lead type names and their visibility status
+      description: Gets the lead type names and their visibility status
+      security:
+        - client_application:
+            - openid
+            - GatorLeadApi
+            - offline_access
+      operationId: gatorlead_leadTypeNames
+      tags:
+        - Gator Leads
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: clientId
+          in: path
+          type: string
+          required: true
+          description: the id of the client. **This is a GUID**
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"          
+      
+      responses:
+        "200":
+          description: Returns the type names as an object
+          schema:
+            $ref: "#/definitions/gatorleads_leadTypeNames"
       
 definitions:
 
@@ -1681,7 +1886,7 @@ definitions:
     properties:
       id:
         type: string
-        description: this id of the client. **This is a GUID**
+        description: the id of the client. **This is a GUID**
         pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
       name:
         type: string
@@ -2934,11 +3139,6 @@ definitions:
       domains":
         - "sample string 1"
         - "sample string 2"
-
-  gatorleads_clients:
-    type: array
-    items:
-      $ref: "#/definitions/gatorleads_client"
   
   gatorleads_lead:
     type: object
@@ -3219,4 +3419,219 @@ definitions:
         items:
           $ref: "#/definitions/gatorleads_trackedlink"
 
+  gatorleads_contactsdailyconnections:
+    type: object
+    properties:
+      date:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      rate:
+        type: integer
+        description: The count of distinct contacts
+      year:
+        type: integer
+        description: The year in which the connections occurred
+      month:
+        type: integer
+        description: The month in which the connections occurred
+      day:
+        type: integer
+        description: The day in which the connections occurred
+    example:
+      date: "2017-07-06T16:15:00"
+      rate: 100
+      year: 2017
+      month: 7
+      day: 6
       
+  gatorleads_companydailyconnections:
+    type: object
+    properties:
+      date:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      rate:
+        type: integer
+        description: The count of distinct companies
+      year:
+        type: integer
+        description: The year in which the connections occurred
+      month:
+        type: integer
+        description: The month in which the connections occurred
+      day:
+        type: integer
+        description: The day in which the connections occurred
+    example:
+      date: "2017-07-06T16:15:00"
+      rate: 100
+      year: 2017
+      month: 7
+      day: 6  
+      
+  gatorleads_userclient:
+    type: object
+    properties:
+      id:
+        type: string
+        pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+      name:
+        type: string
+      accountExpiry:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      trackingCode:
+        type: string
+      trackingScript:
+        type: string
+      trackingScriptSsl:
+        type: string        
+      domains:
+        type: array
+        items:
+          type: string
+    example:
+      id: "157a7a31-464b-4ec8-a48d-dd16c3e72ce6"
+      name: "{{Client Name within GatorLeads}}"
+      accountExpiry": "2019-01-01T00:00:00"
+      trackingCode: "sample string 3"
+      trackingScript: "tracking script code (JavaScript)"
+      trackingScriptSsl: "tracking script code. SSL version (JavaScript)"      
+      domains":
+        - "sample string 1"
+        - "sample string 2"      
+        
+  gatorleads_purl:
+    type: object
+    properties:
+      emailAddress:
+        type: string
+      url:
+        type: string
+      campaign:
+        type: string
+      alert:
+        type: boolean
+    example:
+      emailAddress: "joe.blogs@example.com"
+      url: "http://wysi.bz/19768933a"
+      campaign: "campaign 1"
+      alert": false
+      
+  gatorleads_leadTypeNames:
+    type: object
+    properties:
+      lead:
+        type: object
+        properties:
+          show:
+            type: boolean
+          name:
+            type: string
+      competitor:
+        type: object
+        properties:
+          show:
+            type: boolean
+          name:
+            type: string
+      customer:
+        type: object
+        properties:
+          show:
+            type: boolean
+          name:
+            type: string
+      qualified:
+        type: object
+        properties:
+          show:
+            type: boolean
+          name:
+            type: string
+      partner:
+        type: object
+        properties:
+          show:
+            type: boolean
+          name:
+            type: string   
+      contact:
+        type: object
+        properties:
+          show:
+            type: boolean
+          name:
+            type: string  
+      supplier:
+        type: object
+        properties:
+          show:
+            type: boolean
+          name:
+            type: string               
+      isp:
+        type: object
+        properties:
+          show:
+            type: boolean
+          name:
+            type: string   
+      custom1:
+        type: object
+        properties:
+          show:
+            type: boolean
+          name:
+            type: string 
+      custom2:
+        type: object
+        properties:
+          show:
+            type: boolean
+          name:
+            type: string   
+      custom3:
+        type: object
+        properties:
+          show:
+            type: boolean
+          name:
+            type: string               
+    example:
+      lead:
+        show: true
+        name: "sample string 2"
+      competitor:
+        show: true
+        name: "sample string 2"
+      customer:
+        show: true
+        name: "sample string 2"
+      qualified:
+        show: true
+        name: "sample string 2"
+      partner:
+        show: true
+        name: "sample string 2"
+      contact:
+        show: true
+        name: "sample string 2"
+      supplier:
+        show: true
+        name: "sample string 2"
+      isp:
+        show: true
+        name: "sample string 2"
+      custom1:
+        show: true
+        name: "sample string 2"
+      custom2:
+        show: true
+        name: "sample string 2"
+      custom3:
+        show: true
+        name: "sample string 2"
