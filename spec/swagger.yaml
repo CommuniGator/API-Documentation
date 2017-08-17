@@ -268,6 +268,130 @@ paths:
           schema:
             $ref: '#/definitions/gatormail_errorModel'
   
+  /mail/{landingZone}/history/{campaignId}/opens/{page}/{take}?orderBy&orderDirection:
+    get:
+      summary: List all campaign opens
+      description: Gets a paged list of campaign opens.
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_getCampaignOpenList
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: campaignId
+          in: path
+          description: the id of the campaign to retrieve opens for
+          required: true
+          type: string          
+        - name: page
+          in: path
+          type: integer
+          required: true
+          description: the page to get
+          format: int32
+        - name: take
+          in: path
+          type: integer
+          required: true
+          description: how many campaign opens to get per page
+          format: int32
+        - name: orderBy
+          in: query
+          type: string
+          required: false
+          description: an attribute to order the results by (defaults to date, but can be any contact attribute)
+          format: string
+        - name: orderDirection
+          in: query
+          type: string
+          required: false
+          description: the direction to order the results in (asc or desc)
+          format: string          
+      responses:
+        "200":
+          description: List of campaign opens
+          schema:
+            $ref: "#/definitions/gatormail_pagedCampaignOpen"
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'  
+            
+  /mail/{landingZone}/history/{campaignId}/bounces/{page}/{take}?orderBy&orderDirection:
+    get:
+      summary: List all campaign bounces
+      description: Gets a paged list of campaign bounces.
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_getCampaignBounceList
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: campaignId
+          in: path
+          description: the id of the campaign to retrieve bounces for
+          required: true
+          type: string          
+        - name: page
+          in: path
+          type: integer
+          required: true
+          description: the page to get
+          format: int32
+        - name: take
+          in: path
+          type: integer
+          required: true
+          description: how many campaign bounces to get per page
+          format: int32
+        - name: orderBy
+          in: query
+          type: string
+          required: false
+          description: an attribute to order the results by (defaults to date, but can be any contact attribute)
+          format: string
+        - name: orderDirection
+          in: query
+          type: string
+          required: false
+          description: the direction to order the results in (asc or desc)
+          format: string          
+      responses:
+        "200":
+          description: List of campaign bounces
+          schema:
+            $ref: "#/definitions/gatormail_pagedCampaignBounce"
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'              
+  
   /mail/{landingZone}/group:
     post:
       summary: Add a new group
@@ -425,6 +549,63 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/gatormail_errorModel'
+              
+  /mail/{landingZone}/group/{groupId}/contacts/included/{page}/{take}?attributes:            
+    get:
+      summary: Gets contacts included in a Group
+      description: Gets contacts included in a Group
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_groupIncludedContacts
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: groupId
+          in: path
+          description: the group for which to retrieve included contacts for
+          required: true
+          type: integer
+          format: int32
+        - name: page
+          in: path
+          description: the page of contacts to retrieve
+          required: true
+          type: integer
+          format: int32          
+        - name: take
+          in: path
+          description: the count of records to retrieve
+          required: true
+          type: integer
+          format: int32 
+        - name: attributes
+          in: query
+          description: comma separated list of attributes to populate in the response. If none provided email, firstname and lastname are populated
+          required: false
+          type: string
+                    
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/gatormail_pagedContact"
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'              
               
   /mail/{landingZone}/group/{groupId}/contact/{contactId}:            
     patch:
@@ -2831,6 +3012,106 @@ definitions:
         format: int32
         type: integer
         
+  gatormail_pagedCampaignOpen:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: "#/definitions/gatormail_campaignOpen"
+      pageCount:
+        format: int32
+        type: integer
+      totalItemCount:
+        format: int32
+        type: integer
+      pageIndex:
+        format: int32
+        type: integer
+      pageNumber:
+        format: int32
+        type: integer
+      pageSize:
+        format: int32
+        type: integer
+      hasPreviousPage:
+        type: boolean
+      hasNextPage:
+        type: boolean
+      isFirstPage:
+        type: boolean
+      isLastPage:
+        type: boolean
+      firstItemOnPage:
+        format: int32
+        type: integer
+      lastItemOnPage:
+        format: int32
+        type: integer  
+        
+  gatormail_campaignOpen:
+    type: object
+    properties:
+      date:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      contact:
+        $ref: "#/definitions/gatormail_contact"
+        
+  gatormail_pagedCampaignBounce:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: "#/definitions/gatormail_campaignBounce"
+      pageCount:
+        format: int32
+        type: integer
+      totalItemCount:
+        format: int32
+        type: integer
+      pageIndex:
+        format: int32
+        type: integer
+      pageNumber:
+        format: int32
+        type: integer
+      pageSize:
+        format: int32
+        type: integer
+      hasPreviousPage:
+        type: boolean
+      hasNextPage:
+        type: boolean
+      isFirstPage:
+        type: boolean
+      isLastPage:
+        type: boolean
+      firstItemOnPage:
+        format: int32
+        type: integer
+      lastItemOnPage:
+        format: int32
+        type: integer  
+        
+  gatormail_campaignBounce:
+    type: object
+    properties:
+      date:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      type:
+        type: string
+        description: The type of the bounce (Hard Bounce, Soft Bounce, Auto Responder, Transient, Challenge Verification, Dns Error, Spam Notification, Virus Notification, Unknown, Complaints)
+      description:
+        type: string
+        description: A description of the bounce
+      contact:
+        $ref: "#/definitions/gatormail_contact"        
+        
   gatormail_group:
     type: object
     required:
@@ -2922,6 +3203,43 @@ definitions:
         type: string
       additionalProperties:
         type: string
+        
+  gatormail_pagedContact:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: "#/definitions/gatormail_contact"
+      pageCount:
+        format: int32
+        type: integer
+      totalItemCount:
+        format: int32
+        type: integer
+      pageIndex:
+        format: int32
+        type: integer
+      pageNumber:
+        format: int32
+        type: integer
+      pageSize:
+        format: int32
+        type: integer
+      hasPreviousPage:
+        type: boolean
+      hasNextPage:
+        type: boolean
+      isFirstPage:
+        type: boolean
+      isLastPage:
+        type: boolean
+      firstItemOnPage:
+        format: int32
+        type: integer
+      lastItemOnPage:
+        format: int32
+        type: integer        
         
   gatormail_contact:
     type: object
