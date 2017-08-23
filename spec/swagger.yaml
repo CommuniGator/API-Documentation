@@ -3415,7 +3415,9 @@ definitions:
         type: string
       fromName: 
         type: string
+        description: "This is only required when attaching an email to the campaign"
       fromAddress: 
+        description: "This is only required when attaching an email to the campaign"
         type: string
       subject: 
         type: string
