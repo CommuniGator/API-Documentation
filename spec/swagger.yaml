@@ -13,7 +13,7 @@ info:
       
       This documentation is still being worked on.
 
-  version: 0.2.1
+  version: 0.5.1
   title: Communigator API Documentation
   contact:
     email: support@communigator.co.uk
@@ -3389,6 +3389,8 @@ definitions:
       - type
       - startDate
       - endDate
+      - fromName
+      - fromAddress
     properties:
       id:
         type: integer
