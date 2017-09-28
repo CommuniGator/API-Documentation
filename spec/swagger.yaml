@@ -2407,7 +2407,7 @@ paths:
   /survey/{AccountId}/results/{SurveyId}:
    get:
       summary: Get Survey Results (All Versions)
-      description: Gets a list of all version of the requested survey id and returns a list of all versions and responces made per version, addtion option can be passed to get the responses result answers as well.
+      description: Gets a list of all version of the requested survey id and returns a list of all versions and responses made per version, addtion option can be passed to get the responses result answers as well.
       security:
         - client_application:
             - openid
@@ -2472,7 +2472,7 @@ paths:
   /survey/{AccountId}/results/{SurveyId}/{VerionNumber}:
    get:
       summary: Get Survey Results (at versions)
-      description: Gets a list of all version of the requested survey id and returns a list of a single versions and responces made to that version, addtion option can be passed to get the responses result answers as well.
+      description: Gets a list of all version of the requested survey id and returns a list of a single versions and responses made to that version, addtion option can be passed to get the responses result answers as well.
       security:
         - client_application:
             - openid
@@ -2536,7 +2536,7 @@ paths:
           description: Include or exclude in complete surveys responses.
       responses:
         "200":
-          description: Returns a servey version and the responses attached to that survey version
+          description: Returns a survey version and the responses attached to that survey version
           schema:
               $ref: "#/definitions/gatorSurvey_BasicSurveyReponceResults"
   
@@ -2623,7 +2623,7 @@ paths:
   /survey/{AccountId}/reponses:
    get:
     summary: Get response since last called.
-    description: Gets a list responces for all surveys since this method was lasts called. 
+    description: Gets a list responses for all surveys since this method was lasts called. 
     security:
       - client_application:
           - openid
@@ -2641,7 +2641,7 @@ paths:
           pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
     responses:
         "200":
-          description: Returns a list responces for all surveys
+          description: Returns a list responses for all surveys
           schema:
             type: array
             items:
@@ -2668,7 +2668,7 @@ paths:
           pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
     responses:
         "200":
-          description: Empty responce on scussess
+          description: Empty response on scussess
         
 definitions:
 
@@ -4078,7 +4078,7 @@ definitions:
       data:
         type: array
         items:
-          $ref: "#/definitions/gatormail_emailResponce"
+          $ref: "#/definitions/gatormail_emailresponse"
       pageCount:
         format: int32
         type: integer
@@ -4109,7 +4109,7 @@ definitions:
         format: int32
         type: integer 
         
-  gatormail_emailResponce:
+  gatormail_emailresponse:
     type: object
     properties:
       Id:
@@ -5302,7 +5302,7 @@ definitions:
     properties:
       id:
         type: string
-        description: id of survey responce
+        description: id of survey response
         pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
       startDate:
         type: string
