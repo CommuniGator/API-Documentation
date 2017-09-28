@@ -13,7 +13,7 @@ info:
       
       This documentation is still being worked on.
 
-  version: 0.5.1
+  version: 0.5.3
   title: Communigator API Documentation
   contact:
     email: support@communigator.co.uk
@@ -39,6 +39,10 @@ tags:
     description: GatorMail API endpoint
   - name: Gator Leads
     description: GatorLeads API endpoint
+  - name: Gator Survey
+    description: GatorSurvey API endpoint
+    
+    
 securityDefinitions:
   client_auth:
     type: oauth2
@@ -54,6 +58,7 @@ securityDefinitions:
     scopes:
       openid: OpenId scope
       GatorMailApi: GatorMail scope
+      GatorSurveyApi: GatorSurvey scope
       GatorLeadApi: GatorLead scope
       offline_access: Offline scope
 paths:
@@ -2342,7 +2347,329 @@ paths:
           description: Returns the type names as an object
           schema:
             $ref: "#/definitions/gatorleads_leadTypeNames"
-      
+            
+  /survey/account:
+   get:
+      summary: Gets a list of accounts the Authenticated User has access too.
+      description: Gets a list of accounts the Authenticated User has access too.
+      security:
+        - client_application:
+            - openid
+            - GatorSurveyApi
+            - offline_access
+      operationId: gatorSurvey_accounts
+      tags:
+        - Gator Survey
+      responses:
+        "200":
+          description: Returns a list of accounts for user
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/gatorSurvey_account"
+              
+  /survey/{AccountId}/Surveylist:
+   get:
+      summary: Get a list of Surveys for account
+      description: a paged list of surveys,
+      security:
+        - client_application:
+            - openid
+            - GatorSurveyApi
+            - offline_access
+      operationId: gatorSurvey_surveylist
+      tags:
+        - Gator Survey
+      parameters:
+        - name: AccountId
+          in: path
+          type: string
+          required: true
+          description: the id of the account. **This is a GUID**
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+        - name: page
+          in: query
+          type: integer
+          minimum: 1
+          description: The number of items to skip before starting to collect the result set
+        - name: take
+          in: query
+          type: integer
+          minimum: 1
+          maximum: 100
+          description: The numbers of items to return
+      responses:
+        "200":
+          description: Returns a paging object that shows a list of Survey
+          schema:
+              $ref: "#/definitions/gatorSurvey_PageSurveyItemLists"
+
+  /survey/{AccountId}/results/{SurveyId}:
+   get:
+      summary: Get Survey Results (All Versions)
+      description: Gets a list of all version of the requested survey id and returns a list of all versions and responses made per version, addtion option can be passed to get the responses result answers as well.
+      security:
+        - client_application:
+            - openid
+            - GatorSurveyApi
+            - offline_access
+      operationId: gatorSurvey_results
+      tags:
+        - Gator Survey
+      parameters:
+        - name: AccountId
+          in: path
+          type: string
+          required: true
+          description: the id of the account. **This is a GUID**
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+        - name: SurveyId
+          in: path
+          type: string
+          required: true
+          description: the id of the survey you want results for. **This is a GUID**
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+        - name: page
+          in: query
+          type: integer
+          minimum: 1
+          description: The number of survey versions to skip before starting to collect the result set.
+        - name: take
+          in: query
+          type: integer
+          minimum: 1
+          maximum: 100
+          description: The numbers of survey versions to return.
+        - name: responsePage
+          in: query
+          type: integer
+          minimum: 1
+          description: The number of survey responses per version to skip before starting to collect the result set.
+        - name: responseTake
+          in: query
+          type: integer
+          minimum: 1
+          maximum: 100
+          description: The numbers of survey responses per version to return.
+        - name: includeResults
+          in: query
+          type: boolean
+          description: Include or exclude survey results answers.
+        - name: includeTrackinfo
+          in: query
+          type: boolean
+          description: Include or exclude GatorMail traking Data. (Useful to get contacts CRM id or the GatorMail CampaignId).
+        - name: completedOnly
+          in: query
+          type: boolean
+          description: Include or exclude in complete surveys responses.
+      responses:
+        "200":
+          description: Returns a paging object that shows a list Survey Results
+          schema:
+              $ref: "#/definitions/gatorSurvey_PageBasicSurveyReponceListResults"
+              
+  /survey/{AccountId}/results/{SurveyId}/{VerionNumber}:
+   get:
+      summary: Get Survey Results (at versions)
+      description: Gets a list of all version of the requested survey id and returns a list of a single versions and responses made to that version, addtion option can be passed to get the responses result answers as well.
+      security:
+        - client_application:
+            - openid
+            - GatorSurveyApi
+            - offline_access
+      operationId: gatorSurvey_resultsAtVersion
+      tags:
+        - Gator Survey
+      parameters:
+        - name: AccountId
+          in: path
+          type: string
+          required: true
+          description: the id of the account. **This is a GUID**
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+        - name: SurveyId
+          in: path
+          type: string
+          required: true
+          description: the id of the survey you want results for. **This is a GUID**
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+        - name: VerionNumber
+          in: path
+          type: integer
+          format: Int32
+          required: true
+          description: The publish version number of the survey 
+        - name: page
+          in: query
+          type: integer
+          minimum: 1
+          description: The number of survey versions to skip before starting to collect the result set.
+        - name: take
+          in: query
+          type: integer
+          minimum: 1
+          maximum: 100
+          description: The numbers of survey versions to return.
+        - name: responsePage
+          in: query
+          type: integer
+          minimum: 1
+          description: The number of survey responses per version to skip before starting to collect the result set.
+        - name: responseTake
+          in: query
+          type: integer
+          minimum: 1
+          maximum: 100
+          description: The numbers of survey responses per version to return.
+        - name: includeResults
+          in: query
+          type: boolean
+          description: Include or exclude survey results answers.
+        - name: includeTrackinfo
+          in: query
+          type: boolean
+          description: Include or exclude GatorMail traking Data. (Useful to get contacts CRM id or the GatorMail CampaignId).
+        - name: completedOnly
+          in: query
+          type: boolean
+          description: Include or exclude in complete surveys responses.
+      responses:
+        "200":
+          description: Returns a survey version and the responses attached to that survey version
+          schema:
+              $ref: "#/definitions/gatorSurvey_BasicSurveyReponceResults"
+  
+  /survey/{AccountId}/reponses/{ResponseId}:
+   get:
+    summary: Get Results for Response
+    description: Get a list of results answers for a responses.
+    security:
+      - client_application:
+          - openid
+          - GatorSurveyApi
+          - offline_access
+    operationId: gatorSurvey_ReponsesResult
+    tags:
+      - Gator Survey
+    parameters:
+        - name: AccountId
+          in: path
+          type: string
+          required: true
+          description: the id of the account id. **This is a GUID**
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+        - name: ResponseId
+          in: path
+          type: string
+          required: true
+          description: the id of the response id. **This is a GUID**
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+    responses:
+        "200":
+          description: returns list of results answers for a responses
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/gatorSurvey_UserResponses"
+              
+  /survey/{AccountId}/reponses/inRange/{StartDate}:
+   get:
+    summary: Get response made in a from or between a given date. 
+    description: Get response made in a from or between a given date for all surveys. 
+    security:
+      - client_application:
+          - openid
+          - GatorSurveyApi
+          - offline_access
+    operationId: gatorSurvey_ReponsesinRange
+    tags:
+      - Gator Survey
+    parameters:
+        - name: AccountId
+          in: path
+          type: string
+          required: true
+          description: the id of the account. **This is a GUID**
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+        - name: StartDate
+          in: path
+          type: integer
+          format: double
+          required: true
+          description: Unix datetime of when to start collecting responses for all surveys. 
+        - name: endDate
+          in: query
+          type: integer
+          format: double
+          description: Unix datetime of when to stop collecting responses for all surveys.
+        - name: page
+          in: query
+          type: integer
+          minimum: 1
+          description: The number of responses to skip before starting to collect the result set.
+        - name: take
+          in: query
+          type: integer
+          minimum: 1
+          maximum: 100
+          description: The numbers of responses to return.
+    responses:
+        "200":
+          description: Returns a list of paged object that shows a list of reponses from the given date
+          schema:
+              $ref: "#/definitions/gatorSurvey_BasicSurveyReponceResults"
+  
+  /survey/{AccountId}/reponses:
+   get:
+    summary: Get response since last called.
+    description: Gets a list responses for all surveys since this method was lasts called. 
+    security:
+      - client_application:
+          - openid
+          - GatorSurveyApi
+          - offline_access
+    operationId: gatorSurvey_Reponses
+    tags:
+      - Gator Survey
+    parameters:
+        - name: AccountId
+          in: path
+          type: string
+          required: true
+          description: the id of the account. **This is a GUID**
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+    responses:
+        "200":
+          description: Returns a list responses for all surveys
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/gatorSurvey_BasicResponseResults"
+  
+  /survey/{AccountId}/reponses/Reset:
+   post:
+    summary: Reset response since last called.
+    description: Reset to null allowing users to get data from the very begin
+    security:
+      - client_application:
+          - openid
+          - GatorSurveyApi
+          - offline_access
+    operationId: gatorSurvey_ReponsesReset
+    tags:
+      - Gator Survey
+    parameters:
+        - name: AccountId
+          in: path
+          type: string
+          required: true
+          description: the id of the account. **This is a GUID**
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+    responses:
+        "200":
+          description: Empty response on scussess
+        
 definitions:
 
   model_error:
@@ -3751,7 +4078,7 @@ definitions:
       data:
         type: array
         items:
-          $ref: "#/definitions/gatormail_emailResponce"
+          $ref: "#/definitions/gatormail_emailresponse"
       pageCount:
         format: int32
         type: integer
@@ -3782,7 +4109,7 @@ definitions:
         format: int32
         type: integer 
         
-  gatormail_emailResponce:
+  gatormail_emailresponse:
     type: object
     properties:
       Id:
@@ -4813,4 +5140,224 @@ definitions:
         format: int32
         type: integer
       
+  gatorSurvey_account:
+    type: object
+    description: GatorSurvey Account
+    properties:
+      id:
+        type: string
+        pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+      name:
+        type: string
+        description: mame of the account
+
+  gatorSurvey_PageSurveyItemLists:
+    type: object
+    description: Paged Survey Items.
+    properties:
+      surveys:
+        type: array
+        items:
+          $ref: "#/definitions/gatorSurvey_SurveyItem"
+      next:
+        type: string
+        description: Url to get next page is avalible.
+      previous:
+        type: string
+        description: Url to get previous page is avalible.
+      take:
+        type: integer
+        format: int32
+        description: number of items taken
+      page:
+        type: integer
+        format: int32
+        description: page number used.
+      
+  gatorSurvey_SurveyItem:
+    type: object
+    description: Survey Item
+    properties: 
+      id:
+        type: string
+        pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+      name:
+        type: string
+        description: mame of the account
+      createdDate:
+        type: string
+      isPublished:
+          $ref: "#/definitions/gatorSurvey_SurveyStatus"
+      publishedVersion:
+        format: int32
+        type: integer
   
+  gatorSurvey_SurveyStatus:
+    description: current Puplish state of the survey
+    type: object
+    enum: [
+        "Inactive",
+        "Published",
+        "Completed",
+        "Unpublished",
+        "Republished"
+        ]
+        
+  gatorSurvey_TrackingInfo:
+    type: object
+    description: Paged Survey Items.
+    properties:
+      campaignId:
+        type: string
+        description: Campaign id of GatorMail Campaign
+      campaignName:
+        type: string
+        description: Campaign name of GatorMail Campaign
+      contactId:
+        type: string
+        description: Contact id of GatorMail contact
+      pageId:
+        type: string
+      emailId:
+        type: string
+      emailAddress:
+        type: string
+        description: Email Address id of GatorMail contact
+      sendType:
+        type: string
+        description: Campaign send type of GatorMail Campaign
+      crmPersonId:
+        type: string
+        description: Crm Id of GatorMail contact
+      crmPersonType:
+        type: string
+        description: Crm type id of GatorMail contact (i.e CONTACT or LEAD)
+      landingZone:
+        type: string
+        description: GatorMail instance name. 
+        
+        
+  gatorSurvey_PageBasicSurveyReponceListResults:
+    type: object
+    description: Paged Survey Items.
+    properties:
+      surveys:
+        type: array
+        items:
+          $ref: "#/definitions/gatorSurvey_BasicSurveyReponceResults"
+      next:
+        type: string
+        description: Url to get next page is avalible.
+      previous:
+        type: string
+        description: Url to get previous page is avalible.
+      take:
+        type: integer
+        format: int32
+        description: number of items taken
+      page:
+        type: integer
+        format: int32
+        description: page number used.
+        
+  gatorSurvey_BasicSurveyReponceResults:
+    type: object
+    description: Paged Survey Items.
+    properties:
+      id:
+        type: string
+        pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+      name:
+        type: string
+        description: mame of the account
+      createdDate:
+        type: string
+      isPublished:
+          $ref: "#/definitions/gatorSurvey_SurveyStatus"
+      publishedVersion:
+        format: int32
+        type: integer
+      responses:
+        type: array
+        items:
+          $ref: "#/definitions/gatorSurvey_BasicResponseResults"
+      next:
+        type: string
+        description: Url to get next page is avalible.
+      previous:
+        type: string
+        description: Url to get previous page is avalible.
+      take:
+        type: integer
+        format: int32
+        description: number of items taken
+      page:
+        type: integer
+        format: int32
+        description: page number used.
+      
+  gatorSurvey_BasicResponseResults:
+    type: object
+    description: Paged Survey Items.
+    properties:
+      id:
+        type: string
+        description: id of survey response
+        pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+      startDate:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      isCompleted:
+        type: boolean
+        description: number of items taken
+      completedDate:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      results:
+        type: array
+        items:
+          $ref: "#/definitions/gatorSurvey_UserResponses"
+      utmSource:
+        type: string
+      utmMedium:
+        type: string
+      utmCampaign:
+        type: string
+      utmTerm:
+        type: string
+      utmContent:
+        type: string
+      trackingInfo:
+        $ref: "#/definitions/gatorSurvey_TrackingInfo"
+      
+  gatorSurvey_UserResponses:
+    type: object
+    description: Paged Survey Items.
+    properties:
+      question:
+        type: string
+        description: Campaign id of GatorMail Campaign
+      answer:
+        type: string
+        description: Campaign name of GatorMail Campaign
+      questionType:
+        type: string
+        description: Contact id of GatorMail contact
+      answers:
+        type: array
+        description: for question with multiple answers (checkbox, radio, priority list)
+        items:
+          $ref: "#/definitions/gatorSurvey_UserResponsesAnswers"
+  
+  gatorSurvey_UserResponsesAnswers:
+    type: object
+    description: Paged Survey Items.
+    properties:
+      label:
+        type: string
+        description: lable for possible answer
+      answer:
+        type: string
+        description: Value Given for possible answer
