@@ -4352,7 +4352,23 @@ definitions:
         type: array
         items:
           $ref: "#/definitions/gatormail_businessObject"
-
+      mergeFileds:
+        description: "The mergeFileds objects that could be filled in the campaign email"
+        type: array
+        items:
+          $ref: "#/definitions/gatormail_mergeFileds"
+          
+  gatormail_mergeFileds:
+    type: object
+    properties:
+      number:
+        description: "the number id for the merge filed in the email i.e. #MERGEFILED1# this would be 1"
+        type: integer
+        format: int64
+      content:
+        description: "the content to replace the mergefiled with"
+        type: string
+        
   gatormail_campaignContacts:
     type: object
     properties:
