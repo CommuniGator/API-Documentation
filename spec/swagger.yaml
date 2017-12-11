@@ -313,6 +313,49 @@ paths:
           schema:
             $ref: '#/definitions/gatormail_errorModel'
   
+  /mail/{landingZone}/campaign/{campaignId}/sendtest:
+    post:
+      summary: Campaign Send Test
+      description: Send a campaign test email
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_CampaignSendTest
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: campaignId
+          in: path
+          description: the id of the campaign to initiate
+          required: true
+          type: integer
+        - name: campaign
+          in: body
+          required: true
+          schema: 
+            $ref: "#/definitions/gatormail_campaignSendtest"  
+      responses:
+        200:
+          description: OK
+          schema: 
+            $ref: "#/definitions/gatormail_campaignSendtestResult"
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
+  
   /mail/{landingZone}/history/{campaignId}/opens/{page}/{take}?orderBy&orderDirection:
     get:
       summary: List all campaign opens
@@ -5099,6 +5142,23 @@ definitions:
       campaignInitiated:
         type: boolean
       message:
+        type: string
+        
+  gatormail_campaignSendtestResult:
+    type: object
+    properties:
+      CampaignTestSent:
+        description: True value is a successful send.
+        type: boolean
+      message:
+        description: description of out come.
+        type: string
+        
+  gatormail_campaignSendtest:
+    type: object
+    properties:
+      email:
+        description: The email address you want to send the test to.
         type: string
         
   gatormail_campaignTrigger:
