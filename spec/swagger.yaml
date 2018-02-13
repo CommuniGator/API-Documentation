@@ -1079,7 +1079,7 @@ paths:
           format: int32
         - name: entity
           in: body
-          description: the field and its value that you wish to search by
+          description: The field and its value that you wish to search by. Now supports an optional operator enabling enhanced filtering. Operators ("=", "<>", ">", "<", ">=", "<=", "null", "not null", "like", "not like"). For "like" and "not like" use "%" for wild card searches.
           required: true
           schema:
             $ref: "#/definitions/gatormail_groupContactsParam"
@@ -4206,6 +4206,8 @@ definitions:
     properties:
       field: 
         type: string
+      operator:
+        type: string        
       value:
         type: string
   
