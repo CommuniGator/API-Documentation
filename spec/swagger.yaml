@@ -1002,6 +1002,48 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/gatormail_errorModel' 
+          
+  /mail/{landingZone}/contact?email={email}&softDelete={softDelete}:
+    delete:
+      summary: Delete Contact
+      description: Deletes a contact and any duplicates found for the email address passed
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_deleteContact
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: email
+          in: path
+          description: the email address of the contact to delete
+          required: true
+          type: string
+        - name: softDelete
+          in: path
+          description: if true the contact is marked as deleted and then hard deleted after 30 days (this gives you a chance to change your mind if required). if false, the contact is deleted from the database (this conforms with a 'Right to be forgotten' GDPR request).
+          required: true
+          type: boolean          
+    
+      responses:
+        "200":
+          description: Ok
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
             
   /mail/{landingZone}/contact/{email}:
     get:
