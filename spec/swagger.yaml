@@ -1759,6 +1759,57 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/gatormail_errorModel'
+        
+  /mail/{landingZone}/contact/triggerconfirmationoptin/{confirmationOptInId}/{externalFormId}:
+    post:
+      summary: Add/Update Contacts list, trigger Confirmation Opt In
+      description: Add/Update a list of contact then trigger a confirmation opt in email if the contact has not confirmed opted in. 
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_postTriggerConfirmationOptIn
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: confirmationOptInId
+          in: path
+          description: the confirmation opt in id used
+          required: true
+          type: int
+        - name: externalFormId
+          in: path
+          description: external form id.  Helps to itentify for your audit records.  Set as 0 if not used
+          required: true
+          type: integer
+        - name: Confirmation Opt In Contacts
+          in: body
+          description: List of contacts
+          required: true
+          schema:
+            $ref: "#/definitions/gatormail_confirmationOptInContacts"
+            
+      responses:
+        "200":
+          description: Ok
+          schema:
+            $ref: '#/definitions/gatormail_confirmationOptInTrigger'
+            
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
             
   /leads/clients:
     get:
@@ -4207,7 +4258,7 @@ definitions:
       field: 
         type: string
       operator:
-        type: string        
+        type: string
       value:
         type: string
   
@@ -4426,6 +4477,15 @@ definitions:
         type: array
         items:
           $ref: "#/definitions/gatormail_campaignContact"
+      
+  gatormail_confirmationOptInContacts:
+    type: object
+    properties:
+      contacts:
+        description: "List of contacts, set campaignId to send differant campaigns to each contact"
+        type: array
+        items:
+          $ref: "#/definitions/gatormail_contact"
       
   gatormail_contactCreate:
     type: object
@@ -5170,6 +5230,14 @@ definitions:
         type: boolean
       message:
         type: string  
+  
+  gatormail_confirmationOptInTrigger:
+    type: object
+    properties:
+      confirmationOptInTriggered:
+        type: boolean
+      message:
+        type: string  
         
   gatormail_contactAttribute:
     type: object
@@ -5439,3 +5507,7 @@ definitions:
       answer:
         type: string
         description: Value Given for possible answer
+        
+        
+        
+        
