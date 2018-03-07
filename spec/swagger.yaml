@@ -1225,16 +1225,16 @@ paths:
           schema:
             $ref: '#/definitions/gatormail_errorModel'
             
-  /mail/{landingZone}/contact/subjectaccessrequest?email={email}:
+  /mail/{landingZone}/contact/export?email={email}:
     get:
-      summary: Subject Access Request
-      description: Exports contact data for a subject access request.
+      summary: Contact Export
+      description: Exports contact data (conforms to the GDPR subject access request).
       security:
         - client_application:
             - openid
             - GatorMailApi
             - offline_access
-      operationId: gatormail_subjectAccessRequest
+      operationId: gatormail_contactExport
       tags:
         - Gator Mail
       parameters:
@@ -1258,7 +1258,7 @@ paths:
         "200":
           description: Ok
           schema:
-            $ref: '#/definitions/gatormail_subjectAccessRequest'
+            $ref: '#/definitions/gatormail_contactExport'
             
         default:
           description: Unexpected error
@@ -4294,7 +4294,7 @@ definitions:
       value:
         type: string
         
-  gatormail_subjectAccessRequest:
+  gatormail_contactExport:
     type: object
     properties:
       contacts: 
