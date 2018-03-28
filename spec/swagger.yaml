@@ -3811,6 +3811,8 @@ definitions:
         type: string
       text:
         type: string
+      autoTrackLinks:
+        type: bool
         
   gatormail_pagedCampaign:
     type: object
