@@ -3812,7 +3812,7 @@ definitions:
       text:
         type: string
       autoTrackLinks:
-        type: bool
+        type: boolean
         
   gatormail_pagedCampaign:
     type: object
