@@ -13,7 +13,7 @@ info:
       
       This documentation is still being worked on.
 
-  version: 1.0.0
+  version: 1.0.1
   title: Communigator API Documentation
   contact:
     email: support@communigator.co.uk
@@ -3862,6 +3862,8 @@ definitions:
         type: string
       text:
         type: string
+      autoTrackLinks:
+        type: boolean
         
   gatormail_pagedCampaign:
     type: object
