@@ -740,6 +740,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/gatormail_errorModel'
+            
   /mail/{landingZone}/group/{groupId}/contacts/included:            
     post:
       summary: Include a list of contacts to a Group
@@ -1002,6 +1003,48 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/gatormail_errorModel' 
+          
+  /mail/{landingZone}/contact?email={email}&softDelete={softDelete}:
+    delete:
+      summary: Delete Contact
+      description: Deletes a contact and any duplicates found for the email address passed
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_deleteContact
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: email
+          in: path
+          description: the email address of the contact to delete
+          required: true
+          type: string
+        - name: softDelete
+          in: path
+          description: if true the contact is marked as deleted and then hard deleted after 30 days (this gives you a chance to change your mind if required). if false, the contact is deleted from the database (this conforms with a 'Right to be forgotten' GDPR request).
+          required: true
+          type: boolean          
+    
+      responses:
+        "200":
+          description: Ok
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
             
   /mail/{landingZone}/contact/{email}:
     get:
@@ -1181,6 +1224,46 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/gatormail_errorModel'
+            
+  /mail/{landingZone}/contact/export?email={email}:
+    get:
+      summary: Contact Export
+      description: Exports contact data (conforms to the GDPR subject access request).
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_contactExport
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: email
+          in: path
+          type: string
+          required: true
+          description: the contacts email address
+            
+      responses:
+        "200":
+          description: Ok
+          schema:
+            $ref: '#/definitions/gatormail_contactExport'
+            
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'            
             
   /mail/{landingZone}/email/{page}/{take}:
     get:
@@ -4414,7 +4497,35 @@ definitions:
         type: string
       value:
         type: string
-  
+        
+  gatormail_contactExport:
+    type: object
+    properties:
+      contacts: 
+        type: array
+        items:
+          $ref: "#/definitions/gatormail_contact"        
+      campaigns:
+        type: array
+        items:
+          type: string
+      consentConfirmations: 
+        type: array
+        items:
+          $ref: "#/definitions/gatormail_consent_confirmation"                  
+        
+  gatormail_consent_confirmation:
+    type: object
+    properties:
+      confirmedDate: 
+        type: string
+      confirmationStatement:
+        type: string        
+      email:
+        type: string        
+      ipAddress:
+        type: string                
+
   gatormail_contact:
     type: object
     required:
