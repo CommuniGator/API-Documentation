@@ -740,6 +740,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/gatormail_errorModel'
+            
   /mail/{landingZone}/group/{groupId}/contacts/included:            
     post:
       summary: Include a list of contacts to a Group
@@ -1002,6 +1003,48 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/gatormail_errorModel' 
+          
+  /mail/{landingZone}/contact?email={email}&softDelete={softDelete}:
+    delete:
+      summary: Delete Contact
+      description: Deletes a contact and any duplicates found for the email address passed
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_deleteContact
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: email
+          in: path
+          description: the email address of the contact to delete
+          required: true
+          type: string
+        - name: softDelete
+          in: path
+          description: if true the contact is marked as deleted and then hard deleted after 30 days (this gives you a chance to change your mind if required). if false, the contact is deleted from the database (this conforms with a 'Right to be forgotten' GDPR request).
+          required: true
+          type: boolean          
+    
+      responses:
+        "200":
+          description: Ok
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
             
   /mail/{landingZone}/contact/{email}:
     get:
@@ -1079,7 +1122,7 @@ paths:
           format: int32
         - name: entity
           in: body
-          description: the field and its value that you wish to search by
+          description: The field and its value that you wish to search by. Now supports an optional operator enabling enhanced filtering. Operators ("=", "<>", ">", "<", ">=", "<=", "null", "not null", "like", "not like"). For "like" and "not like" use "%" for wild card searches.
           required: true
           schema:
             $ref: "#/definitions/gatormail_groupContactsParam"
@@ -1181,6 +1224,46 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/gatormail_errorModel'
+            
+  /mail/{landingZone}/contact/export?email={email}:
+    get:
+      summary: Contact Export
+      description: Exports contact data (conforms to the GDPR subject access request).
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_contactExport
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: email
+          in: path
+          type: string
+          required: true
+          description: the contacts email address
+            
+      responses:
+        "200":
+          description: Ok
+          schema:
+            $ref: '#/definitions/gatormail_contactExport'
+            
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'            
             
   /mail/{landingZone}/email/{page}/{take}:
     get:
@@ -1684,6 +1767,157 @@ paths:
           schema:
             $ref: '#/definitions/gatormail_errorModel'
 
+  /mail/{landingZone}/confirmationoptinaudit/getall:
+    get:
+      summary: Get all confirmation opt in audit records
+      description: Get all the confirmation opt in audit records
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_getAllConfirmationOptInAudits
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+          
+      responses:
+        "200":
+          description: Returns the requested event
+          schema:
+            $ref: "#/definitions/gatormail_confirmationOptInAuditRecords"
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
+
+  /mail/{landingZone}/confirmationoptinaudit/getbyid/{confirmationOptInId}:
+    get:
+      summary: Get confirmation opt in audit records by Confirmation Opt In Id
+      description: Get confirmation opt in audit records by Confirmation Opt In Id
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_getConfirmationOptInAuditsById
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: confirmationOptInId
+          in: path
+          description: the confirmation opt in id
+          required: true
+          type: string
+    
+      responses:
+        "200":
+          description: Returns the requested event
+          schema:
+            $ref: "#/definitions/gatormail_confirmationOptInAuditRecords"
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
+
+  /mail/{landingZone}/confirmationoptinaudit/getbycontactid/{contactId}:
+    get:
+      summary: Get confirmation opt in audit records by Contact Id
+      description: Get confirmation opt in audit records by Contact Id
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_getConfirmationOptInAuditsByContactId
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: contactId
+          in: path
+          description: the contact id
+          required: true
+          type: string
+    
+      responses:
+        "200":
+          description: Returns the requested event
+          schema:
+            $ref: "#/definitions/gatormail_confirmationOptInAuditRecords"
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
+
+  /mail/{landingZone}/confirmationoptinaudit/getbyemailaddress/{emailAddress}:
+    get:
+      summary: Get confirmation opt in audit records by Email Address
+      description: Get confirmation opt in audit records by Email Address
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_getConfirmationOptInAuditsByEmailAddress
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: emailAddress
+          in: path
+          description: the email address of the contact
+          required: true
+          type: string
+    
+      responses:
+        "200":
+          description: Returns the requested event
+          schema:
+            $ref: "#/definitions/gatormail_confirmationOptInAuditRecords"
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
+
   /mail/{landingZone}/events:
     post:
       summary: Creates an event management event
@@ -1755,6 +1989,57 @@ paths:
       responses:
         "200":
           description: Ok
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
+        
+  /mail/{landingZone}/contact/triggerconfirmationoptin/{confirmationOptInId}/{externalFormId}:
+    post:
+      summary: Add/Update Contacts list, trigger Confirmation Opt In
+      description: Add/Update a list of contact then trigger a confirmation opt in email if the contact has not confirmed opted in. 
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_postTriggerConfirmationOptIn
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: confirmationOptInId
+          in: path
+          description: the confirmation opt in id used
+          required: true
+          type: integer
+        - name: externalFormId
+          in: path
+          description: external form id.  Helps to itentify for your audit records.  Set as 0 if not used
+          required: true
+          type: integer
+        - name: Confirmation Opt In Contacts
+          in: body
+          description: List of contacts
+          required: true
+          schema:
+            $ref: "#/definitions/gatormail_confirmationOptInContacts"
+            
+      responses:
+        "200":
+          description: Ok
+          schema:
+            $ref: '#/definitions/gatormail_confirmationOptInTrigger'
+            
         default:
           description: Unexpected error
           schema:
@@ -4208,9 +4493,39 @@ definitions:
     properties:
       field: 
         type: string
+      operator:
+        type: string
       value:
         type: string
-  
+        
+  gatormail_contactExport:
+    type: object
+    properties:
+      contacts: 
+        type: array
+        items:
+          $ref: "#/definitions/gatormail_contact"        
+      campaigns:
+        type: array
+        items:
+          type: string
+      consentConfirmations: 
+        type: array
+        items:
+          $ref: "#/definitions/gatormail_consent_confirmation"                  
+        
+  gatormail_consent_confirmation:
+    type: object
+    properties:
+      confirmedDate: 
+        type: string
+      confirmationStatement:
+        type: string        
+      email:
+        type: string        
+      ipAddress:
+        type: string                
+
   gatormail_contact:
     type: object
     required:
@@ -4427,6 +4742,15 @@ definitions:
         items:
           $ref: "#/definitions/gatormail_campaignContact"
       
+  gatormail_confirmationOptInContacts:
+    type: object
+    properties:
+      contacts:
+        description: "List of contacts, set campaignId to send differant campaigns to each contact"
+        type: array
+        items:
+          $ref: "#/definitions/gatormail_contact"
+      
   gatormail_contactCreate:
     type: object
     required:
@@ -4516,7 +4840,44 @@ definitions:
         items:
           $ref: "#/definitions/gatormail_businessObject"
   
-  
+  gatormail_confirmationOptInAuditRecord:
+    type: object
+    properties:
+      confirmDateTime:
+        type: string
+      ipAddress:
+        type: string
+      confirmedContactRecord:
+        type: integer
+      source:
+        type: string
+      sourceName:
+        type: string
+      confirmedStatement:
+        type: string
+      emailAddress:
+        type: string
+      confirmationOptInFormName:
+        type: string
+      confirmOptInId:
+        type: integer
+      isDuplicate:
+        type: boolean
+      firstName:
+        type: string
+      lastName:
+        type: string
+      confirmedFieldName:
+        type: string
+      
+  gatormail_confirmationOptInAuditRecords:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: "#/definitions/gatormail_confirmationOptInAuditRecord"
+     
   gatorleads_user:
     type: object
     properties:
@@ -5170,6 +5531,14 @@ definitions:
         type: boolean
       message:
         type: string  
+  
+  gatormail_confirmationOptInTrigger:
+    type: object
+    properties:
+      confirmationOptInTriggered:
+        type: boolean
+      message:
+        type: string  
         
   gatormail_contactAttribute:
     type: object
@@ -5439,3 +5808,7 @@ definitions:
       answer:
         type: string
         description: Value Given for possible answer
+        
+        
+        
+        
