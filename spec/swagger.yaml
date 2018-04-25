@@ -1917,6 +1917,80 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/gatormail_errorModel'
+  
+  /mail/{landingZone}/confirmationoptinaudit/getsincelastrun:
+    get:
+      summary: Get confirmation opt in audit records since the last time this method was called
+      description: Get confirmation opt in audit records since the last time this method was called
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_getConfirmationOptInAuditsSinceLastRun
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+    
+      responses:
+        "200":
+          description: Returns the requested event
+          schema:
+            $ref: "#/definitions/gatormail_confirmationOptInAuditRecords"
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
+            
+            
+  /mail/{landingZone}/confirmationoptinaudit/resetLastRun:
+    post:
+      summary: Reset confirmationoptinaudit/getsincelastrun to return from a given date
+      description: Reset confirmationoptinaudit/getsincelastrun to return from a given date
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_postConfirmationOptInAuditsSinceLastRunReset
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: resetDate
+          in: body
+          required: true
+          schema: 
+            $ref: "#/definitions/gatormail_resetDate"
+    
+      responses:
+        "200":
+          description: Returns the requested event
+          schema:
+            $ref: "#/definitions/gatormail_confirmationOptInAuditRecords"
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_resetDate'
 
   /mail/{landingZone}/events:
     post:
@@ -4869,6 +4943,8 @@ definitions:
         type: string
       confirmedFieldName:
         type: string
+      crmContactId:
+        type: string
       
   gatormail_confirmationOptInAuditRecords:
     type: object
@@ -4877,6 +4953,12 @@ definitions:
         type: array
         items:
           $ref: "#/definitions/gatormail_confirmationOptInAuditRecord"
+          
+  gatormail_resetDate:
+    type : object
+    properties:
+      resetDate:
+        type: string
      
   gatorleads_user:
     type: object
