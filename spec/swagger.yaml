@@ -2119,6 +2119,41 @@ paths:
           schema:
             $ref: '#/definitions/gatormail_errorModel'
             
+  /mail/{landingZone}/unsubscribes/getAllUnsubscribes:
+    post:
+      summary: Get A list of all avalible unsubscribes
+      description: Get a list of all avalible unsubscribes
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_unsubscribes_getAllUnsubscribes
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+            
+      responses:
+        "200":
+          description: Ok
+          schema:
+            $ref: '#/definitions/gatormail_UnsubscribesList'
+            
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
+            
   /leads/clients:
     get:
       summary: Gets your client accounts
@@ -4782,10 +4817,11 @@ definitions:
       confirmedOptedIn:
         type: string
       businessObjects:
-        description: "The business object name in GatorMail"
-        type: array
-        items:
-          $ref: "#/definitions/gatormail_businessObject"
+        description: "The addtional custom Contact Fields you have created in GatorMail"
+        pattern: "{\"Contact Field Name 1\": \"Value of Contact Filed\", \"Contact Field Name 2\": \"... }"
+        type: object
+        additionalProperties:
+          type: string
       mergeFileds:
         description: "The mergeFileds objects that could be filled in the campaign email"
         type: array
@@ -4824,7 +4860,29 @@ definitions:
         type: array
         items:
           $ref: "#/definitions/gatormail_contact"
-      
+          
+  gatormail_UnsubscribesList:
+    type: array
+    items:
+          $ref: "#/definitions/gatormail_Unsubscribe"
+    
+  gatormail_Unsubscribe:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+      description:
+        type: string
+      optinValue:
+        type: string
+      optOutValue:
+        type: string
+      attributeName:
+        type: string
+    
   gatormail_contactCreate:
     type: object
     required:
@@ -4909,10 +4967,13 @@ definitions:
       confirmedOptedIn:
         type: string
       businessObjects:
-        description: "The business object name in GatorMail"
-        type: array
-        items:
-          $ref: "#/definitions/gatormail_businessObject"
+        description: "The addtional custom Contact Fields you have created in GatorMail"
+        pattern: "{\"Contact Field Name 1\": \"Value of Contact Filed\", \"Contact Field Name 2\": \"... }"
+        type: object
+        additionalProperties:
+          type: string
+          
+            
   
   gatormail_confirmationOptInAuditRecord:
     type: object
