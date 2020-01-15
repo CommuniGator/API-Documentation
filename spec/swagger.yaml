@@ -5146,6 +5146,20 @@ definitions:
         - "sample string 1"
         - "sample string 2"
   
+  gatorleads_leadContactDetails:
+    type: object
+    description: Value returned will default to null, unless the lead type is a ContactLead (API v2.0+)
+    properties:
+      companyId:
+        type: string
+        pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+      firstName:
+        type: string
+      lastName:
+        type: string
+      position:
+        type: string
+  
   gatorleads_lead:
     type: object
     properties:
@@ -5200,6 +5214,8 @@ definitions:
         format: int64
       company:
         $ref: "#/definitions/gatorleads_company"
+      contact:
+        $ref: "#/definitions/gatorleads_leadContactDetails"
     example:
       id: 00000000-0000-0000-0000-000000000000
       totalScore: 20
@@ -5263,6 +5279,11 @@ definitions:
           need. Call us now on 01483 698270 to unleash the potential of email marketing
           for your business. "
         revenue: "$1M to $5M"
+      contact:
+        companyid: 00000000-0000-0000-0000-000000000000
+        firstName: William
+        lastname: Shore
+        position: Developer
   gatorleads_leads:
     type: array
     items:
