@@ -13,7 +13,7 @@ info:
       
       This documentation is still being worked on.
 
-  version: 1.1.0
+  version: 1.4.7
   title: Communigator API Documentation
   contact:
     email: support@communigator.co.uk
@@ -196,7 +196,59 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/gatormail_errorModel'
+  
+  /mail/{landingZone}/campaign/{dateRangeSearchType}/{startDate}/{endDate}:
+    get:
+      summary: Search for campaing on a date
+      description: Gets Paged List of `Campaign` objects.
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_getCampaignListByDateRange
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: dateRangeSearchType
+          in: path
+          type: integer
+          required: true
+          description: type of date you want to seatch StartDate = 0, InitiatedDate = 1, CreatedDate = 2
+          format: int32
+        - name: startDate
+          in: path
+          type: integer
+          required: true
+          description: Unix timestamp of the start date
+          format: int32
+        - name: endDate
+          in: path
+          type: integer
+          required: true
+          description: Unix timestamp of the end date
+          format: int32
+      responses:
+        "200":
+          description: List of campaigns
+          schema:
+            $ref: "#/definitions/gatormail_pagedCampaign"
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
 
+  
   /mail/{landingZone}/campaign:
     post:
       summary: Adds a new campaign
@@ -416,7 +468,667 @@ paths:
         default:
           description: Unexpected error
           schema:
-            $ref: '#/definitions/gatormail_errorModel'  
+            $ref: '#/definitions/gatormail_errorModel'
+            
+  /mail/{landingZone}/campaign/results/opens/{campaignId}/{startDate}/{endDate}/{page}/{take}:
+    get:
+      summary: List a campaigns opens in a date range.
+      description: Gets a paged list of a campaigns opens.
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_getCampaignOpenListByDateRange
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: campaignId
+          in: path
+          description: the id of the campaign to retrieve opens for
+          required: true
+          type: string
+        - name: startDate
+          in: path
+          description: unix timestamp for when to start getting data
+          required: true
+          type: string
+        - name: endDate
+          in: path
+          description: unix timestamp for when to stop getting data
+          required: true
+          type: string
+        - name: page
+          in: path
+          type: integer
+          required: true
+          description: the page to get
+          format: int32
+        - name: take
+          in: path
+          type: integer
+          required: true
+          description: how many campaign opens to get per page
+          format: int32
+      responses:
+        "200":
+          description: List of campaign opens
+          schema:
+            $ref: "#/definitions/gatormail_pagedCampaignContactResults"
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
+            
+  /mail/{landingZone}/campaign/results/opens/{startDate}/{endDate}/{page}/{take}:
+    get:
+      summary: List all campaign opens in a date range.
+      description: Gets a paged list of campaign opens.
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_getAllCampaignOpenListByDateRange
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: startDate
+          in: path
+          description: unix timestamp for when to start getting data
+          required: true
+          type: string
+        - name: endDate
+          in: path
+          description: unix timestamp for when to stop getting data
+          required: true
+          type: string
+        - name: page
+          in: path
+          type: integer
+          required: true
+          description: the page to get
+          format: int32
+        - name: take
+          in: path
+          type: integer
+          required: true
+          description: how many campaign opens to get per page
+          format: int32
+      responses:
+        "200":
+          description: List of campaign opens
+          schema:
+            $ref: "#/definitions/gatormail_pagedCampaignContactResults"
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
+  
+  /mail/{landingZone}/campaign/results/opens/{campaignId}/{page}/{take}:
+    get:
+      summary: List all opens for a given Campaing.
+      description: Gets a paged list of campaign opens.
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_getAllOpenForCampaign
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: campaignId
+          in: path
+          description: the id of the campaign to retrieve opens for
+          required: true
+          type: string
+        - name: page
+          in: path
+          type: integer
+          required: true
+          description: the page to get
+          format: int32
+        - name: take
+          in: path
+          type: integer
+          required: true
+          description: how many campaign opens to get per page
+          format: int32
+      responses:
+        "200":
+          description: List of campaign opens
+          schema:
+            $ref: "#/definitions/gatormail_pagedCampaignContactResults"
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
+  
+  /mail/{landingZone}/campaign/results/webhits/{campaignId}/{startDate}/{endDate}/{page}/{take}:
+    get:
+      summary: List a campaigns web hits in a date range.
+      description: Gets a paged list of a campaigns web hits.
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_getCampaignWebHitsListByDateRange
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: campaignId
+          in: path
+          description: the id of the campaign to retrieve opens for
+          required: true
+          type: string
+        - name: startDate
+          in: path
+          description: unix timestamp for when to start getting data
+          required: true
+          type: string
+        - name: endDate
+          in: path
+          description: unix timestamp for when to stop getting data
+          required: true
+          type: string
+        - name: page
+          in: path
+          type: integer
+          required: true
+          description: the page to get
+          format: int32
+        - name: take
+          in: path
+          type: integer
+          required: true
+          description: how many campaign web hits to get per page
+          format: int32
+      responses:
+        "200":
+          description: List of campaign web hits
+          schema:
+            $ref: "#/definitions/gatormail_pagedCampaignContactResults"
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
+            
+  /mail/{landingZone}/campaign/results/webhits/{startDate}/{endDate}/{page}/{take}:
+    get:
+      summary: List all campaign web hits in a date range.
+      description: Gets a paged list of campaign web hits.
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_getAllCampaignwebhitsListByDateRange
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: startDate
+          in: path
+          description: unix timestamp for when to start getting data
+          required: true
+          type: string
+        - name: endDate
+          in: path
+          description: unix timestamp for when to stop getting data
+          required: true
+          type: string
+        - name: page
+          in: path
+          type: integer
+          required: true
+          description: the page to get
+          format: int32
+        - name: take
+          in: path
+          type: integer
+          required: true
+          description: how many campaign web hits to get per page
+          format: int32
+      responses:
+        "200":
+          description: List of campaign web hits
+          schema:
+            $ref: "#/definitions/gatormail_pagedCampaignContactResults"
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
+  
+  /mail/{landingZone}/campaign/results/webhits/{campaignId}/{page}/{take}:
+    get:
+      summary: List all web hits for a given Campaing.
+      description: Gets a paged list of campaign web hits.
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_getAllWebhitsForCampaign
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: campaignId
+          in: path
+          description: the id of the campaign to retrieve opens for
+          required: true
+          type: string
+        - name: page
+          in: path
+          type: integer
+          required: true
+          description: the page to get
+          format: int32
+        - name: take
+          in: path
+          type: integer
+          required: true
+          description: how many campaign web hits to get per page
+          format: int32
+      responses:
+        "200":
+          description: List of campaign web hits
+          schema:
+            $ref: "#/definitions/gatormail_pagedCampaignContactResults"
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
+            
+  /mail/{landingZone}/campaign/results/unsubscribes/{campaignId}/{startDate}/{endDate}/{page}/{take}:
+    get:
+      summary: List a campaigns unsubscribes in a date range.
+      description: Gets a paged list of a campaigns unsubscribes.
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_getCampaignUnsubscribesListByDateRange
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: campaignId
+          in: path
+          description: the id of the campaign to retrieve opens for
+          required: true
+          type: string
+        - name: startDate
+          in: path
+          description: unix timestamp for when to start getting data
+          required: true
+          type: string
+        - name: endDate
+          in: path
+          description: unix timestamp for when to stop getting data
+          required: true
+          type: string
+        - name: page
+          in: path
+          type: integer
+          required: true
+          description: the page to get
+          format: int32
+        - name: take
+          in: path
+          type: integer
+          required: true
+          description: how many campaign unsubscribes to get per page
+          format: int32
+      responses:
+        "200":
+          description: List of campaign unsubscribes
+          schema:
+            $ref: "#/definitions/gatormail_pagedCampaignContactResults"
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
+            
+  /mail/{landingZone}/campaign/results/unsubscribes/{startDate}/{endDate}/{page}/{take}:
+    get:
+      summary: List all campaign unsubscribes in a date range.
+      description: Gets a paged list of campaign unsubscribes.
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_getAllCampaignUnsubscribesListByDateRange
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: startDate
+          in: path
+          description: unix timestamp for when to start getting data
+          required: true
+          type: string
+        - name: endDate
+          in: path
+          description: unix timestamp for when to stop getting data
+          required: true
+          type: string
+        - name: page
+          in: path
+          type: integer
+          required: true
+          description: the page to get
+          format: int32
+        - name: take
+          in: path
+          type: integer
+          required: true
+          description: how many campaign unsubscribes to get per page
+          format: int32
+      responses:
+        "200":
+          description: List of campaign unsubscribes
+          schema:
+            $ref: "#/definitions/gatormail_pagedCampaignContactResults"
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
+  
+  /mail/{landingZone}/campaign/results/unsubscribes/{campaignId}/{page}/{take}:
+    get:
+      summary: List all unsubscribes for a given Campaing.
+      description: Gets a paged list of campaign unsubscribes.
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_getAllUnsubscribesForCampaign
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: campaignId
+          in: path
+          description: the id of the campaign to retrieve opens for
+          required: true
+          type: string
+        - name: page
+          in: path
+          type: integer
+          required: true
+          description: the page to get
+          format: int32
+        - name: take
+          in: path
+          type: integer
+          required: true
+          description: how many campaign unsubscribes to get per page
+          format: int32
+      responses:
+        "200":
+          description: List of campaign unsubscribes
+          schema:
+            $ref: "#/definitions/gatormail_pagedCampaignContactResults"
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
+  
+  /mail/{landingZone}/campaign/results/undeliverables/{campaignId}/{startDate}/{endDate}/{page}/{take}:
+    get:
+      summary: List a campaigns undeliverables in a date range.
+      description: Gets a paged list of a campaigns undeliverables.
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_getCampaignUndeliverablesListByDateRange
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: campaignId
+          in: path
+          description: the id of the campaign to retrieve opens for
+          required: true
+          type: string
+        - name: startDate
+          in: path
+          description: unix timestamp for when to start getting data
+          required: true
+          type: string
+        - name: endDate
+          in: path
+          description: unix timestamp for when to stop getting data
+          required: true
+          type: string
+        - name: page
+          in: path
+          type: integer
+          required: true
+          description: the page to get
+          format: int32
+        - name: take
+          in: path
+          type: integer
+          required: true
+          description: how many campaign undeliverables to get per page
+          format: int32
+      responses:
+        "200":
+          description: List of campaign undeliverables
+          schema:
+            $ref: "#/definitions/gatormail_pagedCampaignContactResults"
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
+            
+  /mail/{landingZone}/campaign/results/undeliverables/{startDate}/{endDate}/{page}/{take}:
+    get:
+      summary: List all campaign undeliverables in a date range.
+      description: Gets a paged list of campaign undeliverables.
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_getAllCampaignUndeliverablesListByDateRange
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: startDate
+          in: path
+          description: unix timestamp for when to start getting data
+          required: true
+          type: string
+        - name: endDate
+          in: path
+          description: unix timestamp for when to stop getting data
+          required: true
+          type: string
+        - name: page
+          in: path
+          type: integer
+          required: true
+          description: the page to get
+          format: int32
+        - name: take
+          in: path
+          type: integer
+          required: true
+          description: how many campaign undeliverables to get per page
+          format: int32
+      responses:
+        "200":
+          description: List of campaign undeliverables
+          schema:
+            $ref: "#/definitions/gatormail_pagedCampaignContactResults"
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
+  
+  /mail/{landingZone}/campaign/results/undeliverables/{campaignId}/{page}/{take}:
+    get:
+      summary: List all undeliverables for a given Campaing.
+      description: Gets a paged list of campaign undeliverables.
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_getAllUndeliverablesForCampaign
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: campaignId
+          in: path
+          description: the id of the campaign to retrieve opens for
+          required: true
+          type: string
+        - name: page
+          in: path
+          type: integer
+          required: true
+          description: the page to get
+          format: int32
+        - name: take
+          in: path
+          type: integer
+          required: true
+          description: how many campaign undeliverables to get per page
+          format: int32
+      responses:
+        "200":
+          description: List of campaign undeliverables
+          schema:
+            $ref: "#/definitions/gatormail_pagedCampaignContactResults"
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
             
   /mail/{landingZone}/history/{campaignId}/bounces/{page}/{take}?orderBy&orderDirection:
     get:
@@ -1219,6 +1931,47 @@ paths:
           description: Ok
           schema:
             $ref: '#/definitions/gatormail_pagedContactAttribute'
+            
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
+            
+  /mail/{landingZone}/contact/attribute:
+    post:
+      summary: Add new contact attributes
+      description: Add new contact attributes
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_postContactAttributes
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: attribute
+          in: body
+          description: the attribute to be added
+          required: true
+          schema:
+            $ref: "#/definitions/gatormail_uploadContactAttribute"
+            
+      responses:
+        "200":
+          description: Ok
+          schema:
+            $ref: '#/definitions/gatormail_uploadContactAttribute'
             
         default:
           description: Unexpected error
@@ -2120,7 +2873,7 @@ paths:
             $ref: '#/definitions/gatormail_errorModel'
             
   /mail/{landingZone}/unsubscribes/getAllUnsubscribes:
-    post:
+    get:
       summary: Get A list of all avalible unsubscribes
       description: Get a list of all avalible unsubscribes
       security:
@@ -2148,6 +2901,141 @@ paths:
           description: Ok
           schema:
             $ref: '#/definitions/gatormail_UnsubscribesList'
+            
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
+            
+  /mail/{landingZone}/workflows/{page}/{take}:
+    get:
+      summary: Get A paged list of all workflows
+      description: Get a paged list of all workflows
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_Getworkflows
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: page
+          in: path
+          type: integer
+          required: true
+          description: the page to get
+          format: int32
+        - name: take
+          in: path
+          type: integer
+          required: true
+          description: how many attributes to return per page
+          format: int32
+            
+      responses:
+        "200":
+          description: Ok
+          schema:
+            $ref: '#/definitions/gatormail_pagedWorkFlow'
+            
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
+            
+  /mail/{landingZone}/workflows/{id}/campaigns:
+    get:
+      summary: Get A list of all campaigns attached to a workflows
+      description: Get a list of all campaigns for a given workflows id
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_GetworkflowsCamapigns
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: id
+          in: path
+          type: integer
+          required: true
+          description: the page to get
+          format: int32
+          
+      responses:
+        "200":
+          description: Ok
+          schema:
+            $ref: '#/definitions/gatormail_WorkFlowCampaings'
+            
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
+            
+  /mail/{landingZone}/landingzones/{page}/{take}}:
+    get:
+      summary: Get A paged list of created Landing Zones
+      description: Get a page list of landing zones
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_GetLandingZones
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: page
+          in: path
+          type: integer
+          required: true
+          description: the page to get
+          format: int32
+        - name: take
+          in: path
+          type: integer
+          required: true
+          description: the page to get
+          format: int32
+          
+      responses:
+        "200":
+          description: Ok
+          schema:
+            $ref: '#/definitions/gatormail_pagedLandinZone'
             
         default:
           description: Unexpected error
@@ -4038,7 +4926,209 @@ definitions:
       lastItemOnPage:
         format: int32
         type: integer
+        
+  gatormail_gatorworkflow:
+    type: object
+    description: a commuingator workflow
+    properties:
+      id:
+        format: int32
+        type: integer
+      name: 
+        type: string
+      notes: 
+        type: string
+      state: 
+        type: string
+      testEmailAddresses: 
+        type: string
+      createdOn:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      startDate:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      endDate:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      publishDate:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
 
+  gatormail_WorkFlowCampaings:
+    type: object
+    description: a commuingator workflow with list of campaigns
+    properties:
+      id:
+        format: int32
+        type: integer
+      name: 
+        type: string
+      notes: 
+        type: string
+      state: 
+        type: string
+      testEmailAddresses: 
+        type: string
+      createdOn:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      startDate:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      endDate:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      publishDate:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      campaings:
+        type: array
+        items:
+          $ref: "#/definitions/gatormail_WorkFlowCampaing"
+        
+  gatormail_WorkFlowCampaing:
+    type: object
+    description: a commuingator workflow with list of campaigns
+    properties:
+      id:
+        format: int32
+        type: integer
+      crmId: 
+        type: string
+      came: 
+        type: string
+      startDate:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      endDate:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      created:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      campaignType:
+        type: string
+
+  gatormail_pagedWorkFlow:
+    type: object
+    description: paged list of workflows
+    properties:
+      data:
+        type: array
+        items:
+          $ref: "#/definitions/gatormail_gatorworkflow"
+      pageCount:
+        format: int32
+        type: integer
+      totalItemCount:
+        format: int32
+        type: integer
+      pageIndex:
+        format: int32
+        type: integer
+      pageNumber:
+        format: int32
+        type: integer
+      pageSize:
+        format: int32
+        type: integer
+      hasPreviousPage:
+        type: boolean
+      hasNextPage:
+        type: boolean
+      isFirstPage:
+        type: boolean
+      isLastPage:
+        type: boolean
+      firstItemOnPage:
+        format: int32
+        type: integer
+      lastItemOnPage:
+        format: int32
+        type: integer
+
+  gatormail_pagedLandinZone:
+    type: object
+    description: paged list of workflows
+    properties:
+      data:
+        type: array
+        items:
+          $ref: "#/definitions/gatormail_LandinZone"
+      pageCount:
+        format: int32
+        type: integer
+      totalItemCount:
+        format: int32
+        type: integer
+      pageIndex:
+        format: int32
+        type: integer
+      pageNumber:
+        format: int32
+        type: integer
+      pageSize:
+        format: int32
+        type: integer
+      hasPreviousPage:
+        type: boolean
+      hasNextPage:
+        type: boolean
+      isFirstPage:
+        type: boolean
+      isLastPage:
+        type: boolean
+      firstItemOnPage:
+        format: int32
+        type: integer
+      lastItemOnPage:
+        format: int32
+        type: integer
+  
+  gatormail_LandinZone:
+    type: object
+    properties:
+      id:
+        format: int32
+        type: integer
+      name:
+        type: string
+      description:
+        type: string
+      html:
+        type: string
+      createdDate:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+        
+  gatormail_CampaignLandinZone:
+    type: object
+    properties:
+      id:
+        format: int32
+        type: integer
+        description: Id of the landing zone you want to attach to the campaing
+      reference:
+        format: int32
+        type: integer
+        description: The reference id used in the email to link the landing zone
+      alias:
+        type: string
+        description: The tilte of the landing zone page 
+        
   gatormail_datafeedOptions:
     type: object
     required:
@@ -4163,6 +5253,9 @@ definitions:
         type: string
       crmId:
         type: string
+      status:
+        type: integer
+        format: int64
       startDate:
         type: string
         description: Date in GMT yyyy-mm-ddT00:00:00
@@ -4185,14 +5278,25 @@ definitions:
         type: string
       subject: 
         type: string
+      unsubscribeId: 
+        type: integer
+        format: int64
       type:
         $ref: "#/definitions/gatormail_campaignType"
       group:
         $ref: "#/definitions/gatormail_group"
       email: 
         $ref: "#/definitions/gatormail_email"
+      landingzones:
+        type: array
+        items: 
+          $ref: "#/definitions/gatormail_CampaignLandinZone"
+      initiateDate:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
         
-  gatormail_email:   
+  gatormail_email:
     type: object
     required:
       - html
@@ -4634,6 +5738,106 @@ definitions:
         type: string        
       ipAddress:
         type: string                
+
+  gatormail_pagedCampaignContactResults:
+    type: object
+    required:
+      - email
+    properties:
+      resultType:
+        type: string
+      campaignId: 
+        type: string
+      eventDate:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      id:
+        type: integer
+        format: int64
+      email:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      title:
+        type: string
+      positionInCompany:
+        type: string
+      companyName:
+        type: string
+      crmCompanyId:
+        type: string
+      crmContactId:
+        type: string
+      sendHtml:
+        type: integer
+        format: int32
+      optIn:
+        type: string
+      bounceCount:
+        type: integer
+        format: int32
+      undeliverable:
+        type: string
+      undeliverableDate:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      address:
+        $ref: "#/definitions/gatormail_address"
+      lastValidated:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      crmExtendedDetail:
+        type: string
+      mostRecentBounceReason:
+        type: string
+      mostRecentBounceDate:
+        type: string
+      crmContactType:
+        type: string
+      contactCreatedDt:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      contactUpdatedDt:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      contactPassword:
+        type: string
+      country:
+        type: string
+      region:
+        type: string
+      industry:
+        type: string
+      department:
+        type: string
+      turnOver:
+        type: string
+      numberOfEmployees:
+        type: string
+      gatorLeadsContact:
+        $ref: "#/definitions/gatormail_gatorLeadContact"
+      gatorLeadCompany:
+        $ref: "#/definitions/gatormail_gatorLeadCompany"
+      mostRecentEmailSentDate:
+        type: string
+      mostRecentEmailOpenDate:
+        type: string
+      mostRecentEngagementDate:
+        type: string
+      confirmedOptedIn:
+        type: string
+      businessObjects:
+        description: "The business object name in GatorMail"
+        type: array
+        items:
+          $ref: "#/definitions/gatormail_businessObject"
 
   gatormail_contact:
     type: object
@@ -5146,6 +6350,20 @@ definitions:
         - "sample string 1"
         - "sample string 2"
   
+  gatorleads_leadContactDetails:
+    type: object
+    description: Value returned will default to null, unless the lead type is a ContactLead (API v2.0+)
+    properties:
+      companyId:
+        type: string
+        pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+      firstName:
+        type: string
+      lastName:
+        type: string
+      position:
+        type: string
+  
   gatorleads_lead:
     type: object
     properties:
@@ -5200,6 +6418,8 @@ definitions:
         format: int64
       company:
         $ref: "#/definitions/gatorleads_company"
+      contact:
+        $ref: "#/definitions/gatorleads_leadContactDetails"
     example:
       id: 00000000-0000-0000-0000-000000000000
       totalScore: 20
@@ -5263,6 +6483,11 @@ definitions:
           need. Call us now on 01483 698270 to unleash the potential of email marketing
           for your business. "
         revenue: "$1M to $5M"
+      contact:
+        companyid: 00000000-0000-0000-0000-000000000000
+        firstName: William
+        lastname: Shore
+        position: Developer
   gatorleads_leads:
     type: array
     items:
@@ -5692,6 +6917,46 @@ definitions:
         type: string
       isClientField:
         type: boolean
+        
+  gatormail_uploadContactAttribute:
+    type: object
+    description: GatorMail new contact attribute
+    required:
+      - attributeName
+      - displayName
+      - dataType
+    properties:
+      attributeName:
+        type: string
+      displayName:
+        type: string
+      dataType:
+        $ref: "#/definitions/gatormail_uploadContactAttributeDateTypes"
+      value:
+        type: string
+      trueValue:
+        type: string
+      falseValue:
+        type: string
+      isPreference:
+        type: boolean
+      includeNullAsTrue:
+        type: boolean
+      blankAsTrue:
+        type: boolean
+        
+        
+  gatormail_uploadContactAttributeDateTypes:
+    description: Allowed data types that can be uploaded
+    type: object
+    enum: [
+        "Number",
+        "Text",
+        "TrueFalse",
+        "Date",
+        "DropDown",
+        "RadioButton"
+        ]
         
   gatormail_pagedContactAttribute:
     type: object
