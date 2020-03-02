@@ -1353,6 +1353,82 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/gatormail_errorModel'
+            
+  /mail/{landingZone}/group/{groupId}/GroupClearDown:            
+    post:
+      summary: Clear all contacts from a give group by Id
+      description: Clear all included and excluded contacts from a give group by Id,
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_GroupClearDownGroupByID
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: groupId
+          in: path
+          description: description
+          required: true
+          type: integer
+          format: int32
+          
+          
+      responses:
+        "200":
+          description: OK
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
+  
+  /mail/{landingZone}/group/GroupClearDown:            
+    post:
+      summary: Clear all contacts from a give group by name
+      description: Clear all included and excluded contacts from a give group by name
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_GroupClearDownGroupByName
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: groupName
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/gatormail_groupGroupClearDownRequest"
+                    
+      responses:
+        "200":
+          description: OK
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
           
   /mail/{landingZone}/group/contact/{contactId}:            
     get:
@@ -5700,6 +5776,12 @@ definitions:
         type: array
         items:
           $ref: "#/definitions/gatormail_contact"
+          
+  gatormail_groupGroupClearDownRequest:
+    type: object
+    properties:
+      name: 
+        type: string
           
   gatormail_groupContactsParam:
     type: object
