@@ -2140,6 +2140,59 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/gatormail_errorModel'
+            
+  /mail/{landingZone}/email/filter/{page}/{take}:
+    get:
+      summary: Get emails by filter
+      description: Get a paged list of emails
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_getEmailFilterList
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: page
+          in: path
+          type: integer
+          required: true
+          description: the page to get
+          format: int32
+        - name: take
+          in: path
+          type: integer
+          required: true
+          description: how many Emails to return per page
+          format: int32
+        - name: entity
+          in: body
+          description: The field and its value that you wish to search by. Now supports an optional operator enabling enhanced filtering. Operators are enmun value <br> equals = 0, <br> greater than = 1, <br> less then = 2, <br> contains = 3,<br> starts with = 4, <br> ends with = 5
+          required: true
+          schema:
+            $ref: "#/definitions/gatormail_EmailFilterParam"
+            
+      responses:
+        "200":
+          description: Ok
+          schema:
+            $ref: '#/definitions/gatormail_pagedEmails'
+            
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
   
   /mail/{landingZone}/integration/requests:
     get:
@@ -5793,6 +5846,17 @@ definitions:
       value:
         type: string
         
+  gatormail_EmailFilterParam:
+    type: object
+    properties:
+      searcField: 
+        type: string
+      searchOperator:
+        type: int
+      searchValue:
+        type: string
+        
+  
   gatormail_contactExport:
     type: object
     properties:
