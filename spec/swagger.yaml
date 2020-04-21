@@ -5849,7 +5849,7 @@ definitions:
   gatormail_EmailFilterParam:
     type: object
     properties:
-      searcField: 
+      SearchField: 
         type: string
       searchOperator:
         type: integer
