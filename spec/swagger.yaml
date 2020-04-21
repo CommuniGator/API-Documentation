@@ -5852,7 +5852,7 @@ definitions:
       searcField: 
         type: string
       searchOperator:
-        type: int
+        type: integer
       searchValue:
         type: string
         
