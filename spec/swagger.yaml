@@ -2178,7 +2178,7 @@ paths:
           format: int32
         - name: entity
           in: body
-          description: The field and its value that you wish to search by. Now supports an optional operator enabling enhanced filtering. Operators are enmun value <br> equals = 0, <br> greater than = 1, <br> less then = 2, <br> contains = 3,<br> starts with = 4, <br> ends with = 5
+          description: The field and its value that you wish to search by. Now supports an optional operator enabling enhanced filtering. Operators are enmun value <br> equals = 0, <br> greater than = 1, <br> less then = 2, <br> contains = 3,<br> ends with = 4, <br> starts with = 5
           required: true
           schema:
             $ref: "#/definitions/gatormail_EmailFilterParam"
@@ -5714,11 +5714,11 @@ definitions:
   gatormail_EmailFilterParam:
     type: object
     properties:
-      SearchField: 
+      searchField: 
         type: string
-      searchOperator:
+      searchOperators:
         type: integer
-      searchValue:
+      SearchValue:
         type: string
         
   
