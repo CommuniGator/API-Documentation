@@ -1780,13 +1780,13 @@ paths:
           description: Contact to update
           required: true
           schema:
-            $ref: "#/definitions/gatormail_contact"
+            $ref: "#/definitions/gatormail_contactUpdate"
     
       responses:
         "200":
           description: List of contacts that match the search field and value supplied
           schema:
-            $ref: "#/definitions/gatormail_contact"
+            $ref: "#/definitions/gatormail_contactUpdate"
         default:
           description: Unexpected error
           schema:
@@ -5853,13 +5853,108 @@ definitions:
   gatormail_contact:
     type: object
     required:
-      - email
+      - id
     properties:
       id:
         type: integer
         format: int64
       email:
         type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      title:
+        type: string
+      positionInCompany:
+        type: string
+      companyName:
+        type: string
+      crmCompanyId:
+        type: string
+      crmContactId:
+        type: string
+      sendHtml:
+        type: integer
+        format: int32
+      optIn:
+        type: string
+      bounceCount:
+        type: integer
+        format: int32
+      undeliverable:
+        type: string
+      undeliverableDate:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      address:
+        $ref: "#/definitions/gatormail_address"
+      lastValidated:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      crmExtendedDetail:
+        type: string
+      mostRecentBounceReason:
+        type: string
+      mostRecentBounceDate:
+        type: string
+      crmContactType:
+        type: string
+      contactCreatedDt:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      contactUpdatedDt:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      contactPassword:
+        type: string
+      country:
+        type: string
+      region:
+        type: string
+      industry:
+        type: string
+      department:
+        type: string
+      turnOver:
+        type: string
+      numberOfEmployees:
+        type: string
+      gatorLeadsContact:
+        $ref: "#/definitions/gatormail_gatorLeadContact"
+      gatorLeadCompany:
+        $ref: "#/definitions/gatormail_gatorLeadCompany"
+      mostRecentEmailSentDate:
+        type: string
+      mostRecentEmailOpenDate:
+        type: string
+      mostRecentEngagementDate:
+        type: string
+      confirmedOptedIn:
+        type: string
+      businessObjects:
+        description: "The business object name in GatorMail"
+        type: array
+        items:
+          $ref: "#/definitions/gatormail_businessObject"
+          
+  gatormail_contactUpdate:
+    type: object
+    required:
+      - id
+      - email
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: ID or Email required
+      email:
+        type: string
+        description: ID or Email required
       firstName:
         type: string
       lastName:
