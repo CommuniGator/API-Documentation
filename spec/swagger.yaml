@@ -199,7 +199,7 @@ paths:
   
   /mail/{landingZone}/campaign/{dateRangeSearchType}/{startDate}/{endDate}:
     get:
-      summary: Search for campaing on a date
+      summary: Search for campaign on a date
       description: Gets Paged List of `Campaign` objects.
       security:
         - client_application:
@@ -587,7 +587,7 @@ paths:
   
   /mail/{landingZone}/campaign/results/opens/{campaignId}/{page}/{take}:
     get:
-      summary: List all opens for a given Campaing.
+      summary: List all opens for a given Campaign.
       description: Gets a paged list of campaign opens.
       security:
         - client_application:
@@ -752,7 +752,7 @@ paths:
   
   /mail/{landingZone}/campaign/results/webhits/{campaignId}/{page}/{take}:
     get:
-      summary: List all web hits for a given Campaing.
+      summary: List all web hits for a given Campaign.
       description: Gets a paged list of campaign web hits.
       security:
         - client_application:
@@ -917,7 +917,7 @@ paths:
   
   /mail/{landingZone}/campaign/results/unsubscribes/{campaignId}/{page}/{take}:
     get:
-      summary: List all unsubscribes for a given Campaing.
+      summary: List all unsubscribes for a given Campaign.
       description: Gets a paged list of campaign unsubscribes.
       security:
         - client_application:
@@ -1082,7 +1082,7 @@ paths:
   
   /mail/{landingZone}/campaign/results/undeliverables/{campaignId}/{page}/{take}:
     get:
-      summary: List all undeliverables for a given Campaing.
+      summary: List all undeliverables for a given Campaign.
       description: Gets a paged list of campaign undeliverables.
       security:
         - client_application:
@@ -5114,7 +5114,7 @@ definitions:
       id:
         format: int32
         type: integer
-        description: Id of the landing zone you want to attach to the campaing
+        description: Id of the landing zone you want to attach to the campaign
       reference:
         format: int32
         type: integer
