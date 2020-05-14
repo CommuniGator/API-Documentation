@@ -408,7 +408,7 @@ paths:
           schema:
             $ref: '#/definitions/gatormail_errorModel'
   
-  /mail/{landingZone}/history/{campaignId}/opens/{page}/{take}?orderBy&orderDirection:
+  /mail/{landingZone}/history/{campaignId}/opens/{page}/{take}?orderBy=date&orderDirection=asc:
     get:
       summary: List all campaign opens
       description: Gets a paged list of campaign opens.
