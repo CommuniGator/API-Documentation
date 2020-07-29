@@ -1475,7 +1475,7 @@ paths:
   /mail/{landingZone}/group/{groupId}/contacts/included/{page}/{take}?attributes:            
     get:
       summary: Gets contacts included in a Group
-      description: Gets contacts included in a Group
+      description: Gets contacts that have been included in a Group via the API or the UI only. Contacts that have been added to the group via group rules, group inclusion and CSV import, will not be returned.
       security:
         - client_application:
             - openid
