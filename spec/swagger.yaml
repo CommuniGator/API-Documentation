@@ -152,6 +152,45 @@ paths:
             	} 
             } 
 
+  /mail/{landingZone}/campaign/{campaignId}:
+    get:
+      summary: Get a campaign
+      description: Get campaign by identifier.
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_getCampaign
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: campaignId
+          in: path
+          type: integer
+          required: true
+          description: the identifier of the campaign to get
+          format: int32
+      responses:
+        "200":
+          description: Campaign response
+          schema:
+            $ref: "#/definitions/gatormail_campaignResponse"
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
+
   /mail/{landingZone}/campaign/{page}/{take}:
     get:
       summary: List all campaigns
@@ -1834,6 +1873,44 @@ paths:
           schema:
             $ref: '#/definitions/gatormail_errorModel'
             
+  /mail/{landingZone}/contact/bulkdelete:
+    post:
+      summary: Bulk Delete Contact
+      description: Bulk deletes one or more contacts and any duplicates found for the email address passed
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_bulkDeleteContact
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: Bulk delete request
+          in: body
+          description: The contact email addresses to bulk delete and whether to soft or hard delete the contacts
+          required: true
+          schema:
+            $ref: "#/definitions/gatormail_bulkDeleteContactsRequest"          
+    
+      responses:
+        "200":
+          description: Ok
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'            
+            
   /mail/{landingZone}/contact/{email}:
     get:
       summary: Get contacts by email
@@ -3031,6 +3108,70 @@ paths:
           schema:
             $ref: '#/definitions/gatormail_UnsubscribesList'
             
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/gatormail_errorModel'
+            
+  /mail/{landingZone}/survey/responses/{surveyId}/{fromDate}/{toDate}/{page}/{take}:
+    get:
+      summary: Get Survey Responses
+      description: Get survey responses for a specific survey between two dates
+      security:
+        - client_application:
+            - openid
+            - GatorMailApi
+            - offline_access
+      operationId: gatormail_getSurveyResponses
+      tags:
+        - Gator Mail
+      parameters:
+        - name: api-version
+          in: header
+          description: the api version being requested
+          required: true
+          type: integer
+        - name: landingZone
+          in: path
+          description: the landing zone that is being accessed
+          required: true
+          type: string
+        - name: surveyId
+          in: path
+          description: The identifier of the survey to retrieve results for
+          required: true
+          type: integer
+          format: int32
+        - name: fromDate
+          in: path
+          type: integer
+          required: true
+          description: Unix timestamp of the from date
+          format: int32
+        - name: toDate
+          in: path
+          type: integer
+          required: true
+          description: Unix timestamp of the to date
+          format: int32          
+        - name: page
+          in: path
+          type: integer
+          required: true
+          description: the page to get
+          format: int32
+        - name: take
+          in: path
+          type: integer
+          required: true
+          description: how many survey responses to get per page
+          format: int32          
+    
+      responses:
+        "200":
+          description: The survey responses
+          schema:
+            $ref: "#/definitions/gatormail_pagedSurveyResponse"
         default:
           description: Unexpected error
           schema:
@@ -5290,6 +5431,61 @@ definitions:
         description: Date in GMT yyyy-mm-ddT00:00:00
         pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
         
+  gatormail_campaignResponse:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+      crmId:
+        type: string
+      status:
+        type: integer
+        format: int64
+      lzUrl:
+        type: string
+      startDate:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      endDate:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      created:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"
+      replyTo: 
+        type: string
+      fromName: 
+        type: string
+      fromAddress: 
+        type: string
+      subject: 
+        type: string
+      unsubscribeId: 
+        type: integer
+        format: int64
+      type:
+        $ref: "#/definitions/gatormail_campaignType"
+      group:
+        $ref: "#/definitions/gatormail_group"
+      email: 
+        $ref: "#/definitions/gatormail_email"
+      landingzones:
+        type: array
+        items: 
+          $ref: "#/definitions/gatormail_CampaignLandinZone"
+      initiateDate:
+        type: string
+        description: Date in GMT yyyy-mm-ddT00:00:00
+        pattern: "^(?:[2-9]\\d\\d\\d)-(?:1[012]|0?[1-9])?-(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:T))|(?:2[0-8]|1\\d|0?[1-9]))T(2[01234]|[01]\\d):[0-5]\\d:[0-5]\\d"     
+      isQuickCampaign:
+        type: boolean
+        
   gatormail_email:
     type: object
     required:
@@ -5306,7 +5502,7 @@ definitions:
       autoTrackLinks:
         type: boolean
         
-  gatormail_campaign_read:
+  gatormail_campaignBasic:
     type: object
     properties:
       id:
@@ -5357,7 +5553,7 @@ definitions:
       data:
         type: array
         items:
-          $ref: "#/definitions/gatormail_campaign_read"
+          $ref: "#/definitions/gatormail_campaignBasic"
       pageCount:
         format: int32
         type: integer
@@ -6200,6 +6396,17 @@ definitions:
         type: array
         items:
           $ref: "#/definitions/gatormail_contact"
+
+  gatormail_bulkDeleteContactsRequest:
+    type: object
+    properties:
+      softDelete:
+        type: boolean
+        description: Whether to soft or hard delete the contacts
+      emailAddresses:
+        type: array
+        items:
+          type: string
           
   gatormail_UnsubscribesList:
     type: array
@@ -6325,6 +6532,122 @@ definitions:
     properties:
       resetDate:
         type: string
+        
+  gatormail_pagedSurveyResponse:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: "#/definitions/gatormail_surveyResponse"
+      pageCount:
+        format: int32
+        type: integer
+      totalItemCount:
+        format: int32
+        type: integer
+      pageIndex:
+        format: int32
+        type: integer
+      pageNumber:
+        format: int32
+        type: integer
+      pageSize:
+        format: int32
+        type: integer
+      hasPreviousPage:
+        type: boolean
+      hasNextPage:
+        type: boolean
+      isFirstPage:
+        type: boolean
+      isLastPage:
+        type: boolean
+      firstItemOnPage:
+        format: int32
+        type: integer
+      lastItemOnPage:
+        format: int32
+        type: integer
+        
+  gatormail_surveyResponse:
+    type: object
+    properties:
+      surveyId:
+        type: integer
+        description: The identifier of the survey
+      sessionId:
+        type: string
+        description: The survey session the response relates to
+      surveyName:
+        type: string
+        description: The name of the survey
+      emailAddress:
+        type: string
+        description: The email address of the contact who submitted the survey
+      firstName:
+        type: string
+        description: The first name of the contact who submitted the survey
+      lastName:
+        type: string
+        description: The last name of the contact who submitted the survey
+      companyName:
+        type: string
+        description: The company name of the contact who submitted the survey
+      crmContactId:
+        type: string
+        description: The CRM identifier of the contact who submitted the survey
+      crmContactType:
+        type: string
+        description: The CRM type of the contact who submitted the survey
+      campaignId:
+        type: integer
+        description: The identifier of the campaign associated with the survey
+      contactId:
+        type: integer
+        description: The identifier of the contact who submitted the survey
+      questionText:
+        type: string
+        description: The survey question text
+      subQuestionText:
+        type: string
+        description: The survey sub question text (if defined)
+      answerText:
+        type: string
+        description: The answer submitted by the contact
+      responseDate:
+        type: string
+        description: The date the submission occured
+      mergeField1:
+        type: string
+        description: Merge field data for merge field 1 (only available if used as part of a trigger email campaign send)   
+      mergeField2:
+        type: string
+        description: Merge field data for merge field 2 (only available if used as part of a trigger email campaign send)   
+      mergeField3:
+        type: string
+        description: Merge field data for merge field 3 (only available if used as part of a trigger email campaign send)   
+      mergeField4:
+        type: string
+        description: Merge field data for merge field 4 (only available if used as part of a trigger email campaign send)   
+      mergeField5:
+        type: string
+        description: Merge field data for merge field 5 (only available if used as part of a trigger email campaign send)   
+      mergeField6:
+        type: string
+        description: Merge field data for merge field 6 (only available if used as part of a trigger email campaign send)   
+      mergeField7:
+        type: string
+        description: Merge field data for merge field 7 (only available if used as part of a trigger email campaign send)   
+      mergeField8:
+        type: string
+        description: Merge field data for merge field 8 (only available if used as part of a trigger email campaign send)   
+      mergeField9:
+        type: string
+        description: Merge field data for merge field 9 (only available if used as part of a trigger email campaign send)   
+      mergeField10:
+        type: string
+        description: Merge field data for merge field 10 (only available if used as part of a trigger email campaign send)           
      
   gatorleads_user:
     type: object
