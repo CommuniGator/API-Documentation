@@ -59,7 +59,7 @@ securityDefinitions:
       openid: OpenId scope
       GatorMailApi: GatorMail scope
       GatorSurveyApi: GatorSurvey scope
-      GatorLeadApi: GatorLead scope
+      GatorLeadsApi: GatorLead scope
       offline_access: Offline scope
 paths:
   /signon/partner/create:
