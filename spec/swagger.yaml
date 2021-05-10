@@ -13,7 +13,7 @@ info:
       
       This documentation is still being worked on.
 
-  version: 1.4.9
+  version: 1.7.0
   title: Communigator API Documentation
   contact:
     email: support@communigator.co.uk
@@ -3184,7 +3184,7 @@ paths:
       security:
         - client_application:
             - openid
-            - GatorLeadApi
+            - GatorLeadsApi
             - offline_access
       operationId: gatorlead_userclients
       tags:
@@ -3211,7 +3211,7 @@ paths:
       security:
         - client_application:
             - openid
-            - GatorLeadApi
+            - GatorLeadsApi
             - offline_access
       operationId: gatorlead_userclient
       tags:
@@ -3242,7 +3242,7 @@ paths:
       security:
         - client_application:
             - openid
-            - GatorLeadApi
+            - GatorLeadsApi
             - offline_access
       operationId: gatorlead_leadtypes
       tags:
@@ -3273,7 +3273,7 @@ paths:
       security:
         - client_application:
             - openid
-            - GatorLeadApi
+            - GatorLeadsApi
             - offline_access
       operationId: gatorlead_lead_company
       tags:
@@ -3310,7 +3310,7 @@ paths:
       security:
         - client_application:
             - openid
-            - GatorLeadApi
+            - GatorLeadsApi
             - offline_access
       operationId: gatorlead_latestleads
       tags:
@@ -3353,7 +3353,7 @@ paths:
       security:
         - client_application:
             - openid
-            - GatorLeadApi
+            - GatorLeadsApi
             - offline_access
       operationId: gatorlead_pagedLead_daterange
       tags:
@@ -3411,7 +3411,7 @@ paths:
       security:
         - client_application:
             - openid
-            - GatorLeadApi
+            - GatorLeadsApi
             - offline_access
       operationId: gatorlead_pagedLead_daterange_search
       tags:
@@ -3474,7 +3474,7 @@ paths:
       security:
         - client_application:
             - openid
-            - GatorLeadApi
+            - GatorLeadsApi
             - offline_access
       operationId: gatorlead_pagedLead_types_daterange_search
       tags:
@@ -3537,7 +3537,7 @@ paths:
       security:
         - client_application:
             - openid
-            - GatorLeadApi
+            - GatorLeadsApi
             - offline_access
       operationId: gatorlead_lead
       tags:
@@ -3574,7 +3574,7 @@ paths:
       security:
         - client_application:
             - openid
-            - GatorLeadApi
+            - GatorLeadsApi
             - offline_access
       operationId: gatorlead_createpurl
       tags:
@@ -3605,7 +3605,7 @@ paths:
       security:
         - client_application:
             - openid
-            - GatorLeadApi
+            - GatorLeadsApi
             - offline_access
       operationId: gatorlead_trackedlinkList
       tags:
@@ -3642,7 +3642,7 @@ paths:
       security:
         - client_application:
             - openid
-            - GatorLeadApi
+            - GatorLeadsApi
             - offline_access
       operationId: gatorlead_contactsDailyConnections
       tags:
@@ -3681,7 +3681,7 @@ paths:
       security:
         - client_application:
             - openid
-            - GatorLeadApi
+            - GatorLeadsApi
             - offline_access
       operationId: gatorlead_companyDailyConnections
       tags:
@@ -3720,7 +3720,7 @@ paths:
       security:
         - client_application:
             - openid
-            - GatorLeadApi
+            - GatorLeadsApi
             - offline_access
       operationId: gatorlead_markTrackedLinksProcessed
       tags:
@@ -3757,7 +3757,7 @@ paths:
       security:
         - client_application:
             - openid
-            - GatorLeadApi
+            - GatorLeadsApi
             - offline_access
       operationId: gatorlead_leadTypes
       tags:
@@ -3784,7 +3784,7 @@ paths:
       security:
         - client_application:
             - openid
-            - GatorLeadApi
+            - GatorLeadsApi
             - offline_access
       operationId: gatorlead_leadTypeNames
       tags:
